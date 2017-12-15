@@ -5,7 +5,7 @@
 !---- then go over jets, check pt/eta and then soft drop
 
 !-----q= input partons
-!-----qjet = output kt jets
+!-----qkt = output kt jets
 !-----qsoft = output softdropped jets
       
       subroutine softdrop(q,qkt,qsoft,Rmin,isub,ipow)
@@ -19,6 +19,9 @@
       integer isub,ipow
 
       integer :: npj(mxpart,mxpart)
+      integer :: firstjet,npjr(mxpart,mxpart)
+      common/softdrop_variables/firstjet,npjr
+!$omp threadprivate(/softdrop_variables/)
       include 'nf.f'
       include 'npart.f'
       include 'jetcuts.f'
@@ -54,17 +57,20 @@
       zcut=0.1_dp
       
       npj(:,:)=0
+      npjr(:,:)=0
       qsoft(:,:)=zip
       qjet(:,:)=zip
       qkt(:,:)=zip
       qjs(:,:)=zip
-      
+      firstjet=-1
+
       jets=0
       maxjet=0
       jetmerge=.false.
       
       do i=3,npart+2-isub
          if (is_hadronic(i)) then
+            if(firstjet .lt. 0) firstjet=i
             maxjet=maxjet+1
             jetindex(maxjet)=i
             npj(maxjet,1)=i 
@@ -229,7 +235,8 @@ c---  set all other momenta to zero and restore leptons
      &       (ayrap(i,qjet) >= etajetmin) .and.
      &        (ayrap(i,qjet) <= etajetmax)) then
            ajet=ajet+1
-          do nu=1,4
+           npjr(ajet,:)=npj(i,:)
+           do nu=1,4
               qsoft(jetindex(ajet),nu)=qjs(i,nu)
               qkt(jetindex(ajet),nu)=qjet(i,nu)
            enddo
@@ -247,6 +254,57 @@ c--- if no jets are removed by eta and pt cuts, then jets=ajet
         enddo
         jets=ajet
       endif
+
+
+
+
+!====== debug
+
+!      write(*,*) 'phase-space point soft drop'
+
+!      write(*,*)
+!      do i=1,8
+!         write(*,*) q(i,1),q(i,2),q(i,3),q(i,4)
+!      enddo
+
+!      write(*,*)
+!      do i=1,8
+!         write(*,*) qjet(i,1),qjet(i,2),qjet(i,3),qjet(i,4)
+!      enddo
+
+!      write(*,*)
+!      do i=1,8
+!         write(*,*) qkt(i,1),qkt(i,2),qkt(i,3),qkt(i,4)
+!      enddo
+
+!      write(*,*)
+!      do i=1,8
+!         write(*,*) qsoft(i,1),qsoft(i,2),qsoft(i,3),qsoft(i,4)
+!      enddo
+
+!      write(*,*)
+!      write(*,*) 'npjr'
+!      do i=1,4
+!         write(*,*) npjr(i,1),npjr(i,2),npjr(i,3),npjr(i,4)
+!      enddo
+
+!      write(*,*)
+!      write(*,*) 'n of jets in qkt = ',jets
+
+!      write(*,*)
+!      write(*,*) '*******************'
+
+!      stop
+
+!====== debug
+
+
+
+
+
+
+
+
 
 
       return
@@ -282,6 +340,23 @@ c--- if no jets are removed by eta and pt cuts, then jets=ajet
 
       endif
       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 !      if(nevent==2833) then
 !         write(6,*) jets
 !         call writeout(qsoft)

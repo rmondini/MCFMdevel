@@ -3,11 +3,11 @@
 # Replace this with the location of Cernlib on your system (if desired)
 CERNLIB     = 
 # Replace this with the location of LHAPDF on your system (if desired)
-LHAPDFLIB   = /home/johnmc/lhapdf-5.8.7/installdir/lib
-LHAPDFLIB   = /home/johnmc/lib
+LHAPDFLIB   = 
+
 
 # Flag for compiling with OpenMP (YES) or not (anything else)
-USEOMP = YES
+USEOMP = NO
 # Flag for compiling with MPI (YES) or not (anything else)
 # note: USEMPI -> YES automatically puts USEOMP -> YES
 USEMPI = NO
@@ -1057,6 +1057,7 @@ pol_real.o \
 cdot.o
 
 NEEDFILES = \
+n21.o\
 softdrop.o\
 softdrop_debug.o\
 clustCA_sd.o\
@@ -1610,6 +1611,7 @@ gencuts_ATLAS_gamjet.o\
 gencuts_Zt.o \
 gencuts_WZjj.o \
 gencuts_VHbb.o\
+gencuts_VHbb_boost.o \
 gencuts_VHWW.o\
 gencuts_ZgaRat.o\
 genplots.o \
@@ -1643,6 +1645,7 @@ nplotter_ttZ.o \
 nplotter_Vgamma.o \
 nplotter_VV.o \
 nplotter_VHbbar.o \
+nplotter_VHbbar_boost.o \
 nplotter_VHbbarHXSWG.o \
 nplotter_W_only.o \
 nplotter_Z_only.o \

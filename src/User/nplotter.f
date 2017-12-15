@@ -52,7 +52,7 @@ c---  own plotting we provide the dummy routine userplotter
 c---  the index of the plot - stored in the nplot.f common and used for                                                      
 c---  keeping track of the plot index across different files (GPS)                                                           
       nextnplot = 1
-      return
+c      return
       
 c---  first allow for user plots
       call userplotter(p,wt,wt2,nd)
@@ -208,6 +208,9 @@ c--- photon processes also need to know the dipole number
            endif
         elseif (kcase==kHgagaI) then
            plotindex=33
+        elseif((kcase.eq.kZHbbnn).or.(kcase.eq.kZHbbjt).or.
+     &           (kcase.eq.kZHn2ac)) then
+           plotindex=34
         else
           plotindex=1000
         endif
@@ -283,7 +286,9 @@ c         call nplotter_VHgaga(p,wt,wt2,switch,nd)
       case (32)
          call nplotter_cms_gamjet(p,wt,wt2,switch) 
       case (33)
-         call nplotter_Hgaga(p,wt,wt2,switch) 
+c         call nplotter_Hgaga(p,wt,wt2,switch)
+      case (34)
+         call nplotter_VHbbar_boost(p,wt,wt2,switch,nd)
       case (1000)
          call nplotter_auto(p,wt,wt2)
 c         call nplotter_generic(p,wt,wt2,switch)

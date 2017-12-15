@@ -54,10 +54,10 @@ c---- SSend
       integer j,nd,isub
       logical gencuts,failedgencuts,photoncuts,makecuts,filterWbbmas,
      &     photonfailed,filterW_bjet,is_photon
-      logical gencuts_VHbb
+      logical gencuts_VHbb_boost,failedgencutsVHbbboost
       integer count_photo,nphotons
       logical passed_frix,iso, passed_taucut,test_tau
-      real(dp) :: psoft(mxpart,4)
+      real(dp) :: psoft(mxpart,4),pkt(mxpart,4)
 c      integer ij
 c      real(dp) y32,y43,z3,z4,z5,z6
 c      real(dp) dphizj,pt5sq,pt6sq,pt7sq
@@ -193,6 +193,22 @@ c--- therefore filter events using special code and skip normal jet testing
 !            write(6,*) 'found jets=',jets
 !     pause
             call maketaucut_hbb(ptrans,isub,passed_taucut)
+
+            if(passed_taucut .eqv. .true.) then
+               call softdrop(ptrans,pkt,psoft,0.8_dp,isub,-1)
+               failedgencutsVHbbboost=gencuts_VHbb_boost(ptrans,pkt,psoft)
+               if (failedgencutsVHbbboost) then
+                  mcfmincdipole=.false.
+                  return
+               else
+                  mcfmincdipole=.true.
+                  return
+               endif
+            else
+               mcfmincdipole=.false.
+               return
+            endif
+
 !           if(passed_taucut.neqv.test_tau) then
 !              call writeout(ptrans)
 !              write(6,*) jets,test_tau,passed_taucut

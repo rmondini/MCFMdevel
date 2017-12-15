@@ -381,6 +381,21 @@ c -- RR: mass definitions
        return
        end
 
+       function onemassmod(j,p)
+       implicit none
+      include 'types.f'
+      real(dp):: onemassmod
+       
+       include 'constants.f'
+      include 'nf.f'
+      include 'mxpart.f'
+       integer:: j
+       real(dp):: p(mxpart,4)
+       onemassmod=p(j,4)**2-p(j,1)**2-p(j,2)**2-p(j,3)**2
+       onemassmod=sqrt(abs(onemassmod))
+       return
+       end
+
       function twomass(j,k1,p)
       implicit none
       include 'types.f'

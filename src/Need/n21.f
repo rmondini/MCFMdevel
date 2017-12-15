@@ -1,0 +1,160 @@
+
+      function n21(p,psoft)
+!===== p is array of parton momenta (so before soft drop)
+!===== psoft is array of momenta after soft drop
+!===== firstjet is the position of the first jet momentum in the array psoft
+!===== nj represents the number of jets in psoft
+!===== so jet momenta are located in psoft at positions firstjet,...,firstjet+nj-1
+      implicit none
+      include 'types.f'
+      real(dp):: n21
+c----calculate variable N_2^1 for boosted H(bb) CMS analysis (arxiv 1709.05543)
+      include 'constants.f'
+      include 'nf.f'
+      include 'mxpart.f'
+      real(dp):: p(mxpart,4),psoft(mxpart,4)
+      real(dp) :: e23corr,e2corr
+      integer :: firstjet,npjr(mxpart,mxpart)
+      integer nj,noj,idlptjet,nplj
+      real(dp) :: lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet(mxpart)
+      common/softdrop_variables/firstjet,npjr
+      common/njetsVH_boost/nj,noj,idlptjet,nplj
+      common/observables_VHbb_boost/lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet
+!$omp threadprivate(/softdrop_variables/,/njetsVH_boost/,/observables_VHbb_boost/) 
+
+      if(nplj.lt.3) then
+         n21=0._dp
+      else
+         n21=e23corr(p)/e2corr(p)**2
+      endif
+      
+      return
+      end
+
+
+
+
+      function zpt(i,p)
+      implicit none
+      include 'types.f'
+      real(dp):: zpt
+      include 'constants.f'
+      include 'nf.f'
+      include 'mxpart.f'
+      real(dp):: p(mxpart,4)
+      integer :: i,j
+      real(dp) pt,ptsum
+      integer :: firstjet,npjr(mxpart,mxpart)
+      integer nj,noj,idlptjet,nplj
+      common/softdrop_variables/firstjet,npjr
+      common/njetsVH_boost/nj,noj,idlptjet,nplj
+
+      ptsum=0._dp
+
+      do j=1,nplj
+         ptsum=ptsum+pt(npjr(idlptjet,j),p)
+      enddo
+
+      zpt=pt(npjr(idlptjet,i),p)/ptsum
+
+      return
+      end
+
+
+
+
+      function e2corr(p)
+      implicit none
+      include 'types.f'
+      real(dp):: e2corr
+      include 'constants.f'
+      include 'nf.f'
+      include 'mxpart.f'
+      real(dp):: p(mxpart,4)
+      integer :: i,j
+      real(dp):: zpt,r
+      integer :: firstjet,npjr(mxpart,mxpart)
+      integer nj,noj,idlptjet,nplj
+      common/softdrop_variables/firstjet,npjr
+      common/njetsVH_boost/nj,noj,idlptjet,nplj
+
+      e2corr=0._dp
+
+      do i=1,nplj-1
+         do j=i+1,nplj
+            e2corr=e2corr+zpt(i,p)*zpt(j,p)*r(p,npjr(idlptjet,i),npjr(idlptjet,j))
+         enddo
+      enddo
+
+      return
+      end
+
+
+
+
+      function e23corr(p)
+      implicit none
+      include 'types.f'
+      real(dp):: e23corr
+      include 'constants.f'
+      include 'nf.f'
+      include 'mxpart.f'
+      real(dp):: p(mxpart,4)
+      integer :: i,j,k
+      real(dp):: zpt,e3rmin12
+      integer :: firstjet,npjr(mxpart,mxpart)
+      integer nj,noj,idlptjet,nplj
+      common/softdrop_variables/firstjet,npjr
+      common/njetsVH_boost/nj,noj,idlptjet,nplj
+
+      e23corr=0._dp
+
+      do i=1,nplj-2
+         do j=i+1,nplj-1
+            do k=j+1,nplj
+               e23corr=e23corr+zpt(i,p)*zpt(j,p)*zpt(k,p)*e3rmin12(p,i,j,k)
+            enddo
+         enddo
+      enddo
+
+      return
+      end
+
+
+
+
+      function e3rmin12(p,ii,jj,kk)
+      implicit none
+      include 'types.f'
+      real(dp):: e3rmin12
+      include 'constants.f'
+      include 'nf.f'
+      include 'mxpart.f'
+      real(dp):: p(mxpart,4)
+      integer :: i,ii,jj,kk
+      real(dp):: r
+      real(dp) e3rmin1val,e3rmin2val,e3rmin3val,rvec(3)
+      integer :: firstjet,npjr(mxpart,mxpart)
+      integer nj,noj,idlptjet,nplj
+      common/softdrop_variables/firstjet,npjr
+      common/njetsVH_boost/nj,noj,idlptjet,nplj
+
+      rvec(1)=r(p,npjr(idlptjet,ii),npjr(idlptjet,jj))
+      rvec(2)=r(p,npjr(idlptjet,ii),npjr(idlptjet,kk))
+      rvec(3)=r(p,npjr(idlptjet,jj),npjr(idlptjet,kk))
+
+      e3rmin1val=minval(rvec)
+      e3rmin3val=maxval(rvec)
+
+      do i=1,3
+         if((rvec(i).gt.e3rmin1val) .and. (rvec(i).lt.e3rmin3val)) e3rmin2val=rvec(i)
+      enddo
+
+      e3rmin12=e3rmin1val*e3rmin2val
+
+      return
+      end
+
+
+
+
