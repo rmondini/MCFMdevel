@@ -89,9 +89,17 @@ c---if x's out of normal range alternative return
           icount=icount+1
         endif
       endif
+
       
       wt5=xjac*pswt
-
+!-----saftey check
+      
+      if (p3(4).ne.p3(4)) return 1
+      if (p4(4).ne.p4(4)) return 1
+      
+      if (p5(4).ne.p5(4)) return 1
+      if (p6(4).ne.p6(4)) return 1
+      if (p7(4).ne.p7(4)) return 1
       if (wt5.ne.wt5) return 1
       if (wt5 == 0._dp) return 1
       
