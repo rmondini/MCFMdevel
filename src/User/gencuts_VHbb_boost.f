@@ -26,7 +26,7 @@
       logical chooseptVcut,chooseptktjet
       real(dp) :: pt,yrap,onemassmod,n21
       real(dp) :: ptlmin,ylmax,metmin
-      real(dp) :: ptVmin,rhojetmin,rhojetmax
+      real(dp) :: ptbbjetmin,ybbjetmax,rhojetmin,rhojetmax
       integer i
       integer lepid,metid,j,njets
       integer :: jets_orig
@@ -44,10 +44,17 @@
 
       ptjet(:)=0
 
+      gencuts_VHbb_boost=.false.
+
+!==== .true. means using ptV for selection pt>450GeV
+!==== .false. means using pt of b-tagged leading jet for selection pt>450GeV
       chooseptVcut=.true.
+
+!==== .true. means using pt of anti-kt jet for rhojet
+!==== .false. means using pt of sd jet for rhojet
       chooseptktjet=.true.
 
-      gencuts_VHbb_boost=.false.
+
 
 
 
@@ -121,7 +128,8 @@
       metmin=15._dp
 
 !======= CMS analysis cuts
-      ptVmin=450._dp
+      ptbbjetmin=450._dp
+      ybbjetmax=2.5_dp
       rhojetmin=-6.0_dp
       rhojetmax=-2.1_dp
 
@@ -133,8 +141,10 @@
      &                ' GeV            *'
             write(6,99) '*        |eta(lepton)|      <   ',ylmax,
      &     '            *'
-            write(6,99) '*        pt(V)      >   ',ptVmin,
+            write(6,99) '*        pt(V/jet)      >   ',ptbbjetmin,
      &                ' GeV            *'
+            write(6,99) '*        |eta(jet)|      <   ',ybbjetmax,
+     &     '            *'
             write(6,99) '*        rho(jet)      >   ',rhojetmin,
      &     '            *'
             write(6,99) '*        rho(jet)      <   ',rhojetmax,
@@ -177,21 +187,6 @@
 !            goto 999
 !         endif
 
-!=====lepton cuts Z
-!      elseif((kcase.eq.kZHbbar).or.(kcase.eq.kZH1jet)
-!     &       .or.(kcase.eq.kZHbbdk)) then
-!======check both leptons
-!         do lepid=3,4
-!            if((pt(lepid,p).lt.ptlmin).or.(abs(yrap(lepid,p)).gt.ylmax))then
-!               gencuts_VHbb_boost=.true.
-!               goto 999
-!            endif
-!         enddo
-!      endif
-
-
-
-
 
 
 
@@ -206,24 +201,6 @@
                goto 999
             endif
          enddo
-      endif
-
-
-
-
-
-
-      if(chooseptVcut) then
-!=====ptV cut: ptV>450 GeV
-         ptV=zip
-         do j=1,2
-            ptV=ptV+(p(3,j)+p(4,j))**2
-         enddo
-         ptV=sqrt(ptV)
-         if(ptV.lt.ptVmin) then
-            gencuts_VHbb_boost=.true.
-            goto 999
-         endif
       endif
 
 !=====find id of b-tagged largest-pt jet ("leading")
@@ -253,6 +230,33 @@
 
       mjetbsd=onemassmod(idlptjet+4,pkt)
 
+!=====pt cut: pt>450 GeV
+
+      ptV=zip
+      do j=1,2
+         ptV=ptV+(p(3,j)+p(4,j))**2
+      enddo
+      ptV=sqrt(ptV)
+
+      if(chooseptVcut) then
+         if(ptV.lt.ptbbjetmin) then
+            gencuts_VHbb_boost=.true.
+            goto 999
+         endif
+      else
+         if(lptjet.lt.ptbbjetmin) then
+            gencuts_VHbb_boost=.true.
+            goto 999
+         endif
+      endif
+
+!=====|yrap leading jet|<2.5
+
+      if(abs(yrap(idlptjet+4,pkt)).gt.ybbjetmax) then
+         gencuts_VHbb_boost=.true.
+         goto 999
+      endif
+
 !=====rhojet cut: -6.0<rhojet<-2.1
 !=====rhojet=log(mjet**2/ptjet**2)
 
@@ -278,9 +282,14 @@
 
 
 
+
+
+
+
+
 !======= debug
 
-!      if(nplj.eq.4) then
+!      if(nplj.eq.3) then
 
 !      if(jets.eq.3) then
 
@@ -310,6 +319,7 @@
 !      write(*,*) 'leading pt sd jet (GeV) = ',pt(idlptjet+4,psoft)
 !      write(*,*) 'mjet sd (GeV) = ',mjet
 !      write(*,*) 'mjet before sd (GeV) = ',mjetbsd
+!      write(*,*) 'yrap leading jet before sd = ',yrap(idlptjet+4,pkt)
 !      write(*,*) 'rhojet = ',rhojet
 !      write(*,*) 'n21jet = ',n21jet
 !      write(*,*) '*******************'
@@ -320,6 +330,7 @@
 !      stop
 
 !======= debug
+
 
 
 
