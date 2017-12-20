@@ -35,7 +35,7 @@ c---                1  --> counterterm for real radiation
       real(dp) :: lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet(mxpart)
       common/nplotmax/nplotmax
       common/observables_VHbb_boost/lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet
-!$omp threadprivate(/njetsVH_boost/,/observables_VHbb_boost/)
+!$omp threadprivate(/observables_VHbb_boost/)
 
 ************************************************************************
 *                                                                      *
