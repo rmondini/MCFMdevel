@@ -25,16 +25,15 @@ c---                1  --> counterterm for real radiation
       include 'outputflags.f'
       include 'interference.f'
       include 'jetlabel.f'
+      include 'softdrop_var.f'
       integer nd
       real(dp):: p(mxpart,4),wt,wt2
       integer:: switch,n
       integer i,tag
       logical, save::first=.true.
       integer nplotmax
-      integer nj,noj,idlptjet,nplj
       real(dp) :: lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet(mxpart)
       common/nplotmax/nplotmax
-      common/njetsVH_boost/nj,noj,idlptjet,nplj
       common/observables_VHbb_boost/lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet
 !$omp threadprivate(/njetsVH_boost/,/observables_VHbb_boost/)
 

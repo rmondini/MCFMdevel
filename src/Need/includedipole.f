@@ -46,6 +46,7 @@ c--- should be included
       include 'hdecaymode.f'
       include 'scetincj.f'
       include 'jetcuts.f'
+      include 'boostparams.f'
 c---- SSbegin
       include 'reweight.f'
 c---- SSend  
@@ -194,17 +195,7 @@ c--- therefore filter events using special code and skip normal jet testing
 !     pause
             call maketaucut_hbb(ptrans,isub,passed_taucut)
 
-            if(passed_taucut .eqv. .true.) then
-               call softdrop(ptrans,pkt,psoft,0.8_dp,isub,-1)
-               failedgencutsVHbbboost=gencuts_VHbb_boost(ptrans,pkt,psoft)
-               if (failedgencutsVHbbboost) then
-                  mcfmincdipole=.false.
-                  return
-               else
-                  mcfmincdipole=.true.
-                  return
-               endif
-            else
+            if(passed_taucut .eqv. .false.) then
                mcfmincdipole=.false.
                return
             endif
@@ -263,8 +254,21 @@ c--- if the number of jets is not correct, then do not include dipole
 !         endif
 !         goto 99
 !      endif
-!      endif
-     
+!     endif
+
+      if(doboostanal) then 
+         call softdrop(ptrans,pkt,psoft,0.8_dp,isub,-1)
+         failedgencutsVHbbboost=gencuts_VHbb_boost(ptrans,pkt,psoft)
+         if (failedgencutsVHbbboost) then
+            mcfmincdipole=.false.
+            return
+         else
+            mcfmincdipole=.true.
+            return
+         endif
+      endif
+      
+      
 c--- check the lepton cuts, if necessary
       if (makecuts) then
         failedgencuts=gencuts(pjet,jets)

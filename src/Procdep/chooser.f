@@ -62,6 +62,7 @@ c---- total cross-section comes out correctly when the BR is removed
       include 'toploops.f'
       include 'scetincj.f'
       include 'gamgamintflags.f'
+      include 'boostparams.f' 
       real(dp):: wwbr,zzbr,tautaubr,gamgambr,zgambr,Rcut,Rbbmin,
      & alphas,cmass,bmass
       real(dp):: br,BrnRat,brwen,brzee,brznn,brtau,brtop,brcharm
@@ -165,6 +166,7 @@ c--- set up most parameters
       doipsgen=.false.
       scet_inc_jets=.false.
       reset_alphaEM=.false.
+      
       lastphot=-1
 c--- default is no interference contributions from identical fermions
       interference=.false.
@@ -1903,9 +1905,10 @@ c-----------------------------------------------------------------------
          if(nproc.eq.1013) kcase=kZHn2bc
          if(nproc.eq.1014) kcase=kZHn2ac
          hdecaymode='bqba'
+         doboostanal=.true. 
          if((nproc.ge.1011).and.(nproc.le.1014)) then
 !------- setup code for massless decays (mb_eff set in hparams)
-            hdecaymode='bbm0'
+            hdecaymode='bbm0'            
             mb=0._dp
          endif
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)

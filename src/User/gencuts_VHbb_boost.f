@@ -22,21 +22,19 @@
       include 'jetlabel.f' 
       include 'first.f'
       include 'energy.f'
+      include 'softdrop_var.f'
       real(kind=dp):: p(mxpart,4),pkt(mxpart,4),psoft(mxpart,4)
       logical chooseptVcut,chooseptktjet
       real(dp) :: pt,yrap,onemassmod,n21
       real(dp) :: ptlmin,ylmax,metmin
       real(dp) :: ptbbjetmin,ybbjetmax,rhojetmin,rhojetmax
+      real(dp) :: e2corr, e23corr
       integer i
       integer lepid,metid,j,njets
       integer :: jets_orig
-      integer :: firstjet,npjr(mxpart,mxpart)
-      integer nj,noj,idlptjet,nplj
       real(dp) :: lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet(mxpart)
-      common/softdrop_variables/firstjet,npjr
-      common/njetsVH_boost/nj,noj,idlptjet,nplj
       common/observables_VHbb_boost/lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet
-!$omp threadprivate(/softdrop_variables/,/njetsVH_boost/,/observables_VHbb_boost/) 
+!$omp threadprivate(/observables_VHbb_boost/) 
 
       jets_orig=jets
       noj=jets_orig
@@ -53,7 +51,6 @@
 !==== .true. means using pt of anti-kt jet for rhojet
 !==== .false. means using pt of sd jet for rhojet
       chooseptktjet=.true.
-
 
 
 
@@ -225,7 +222,7 @@
       enddo
 
       nplj = count(npjr(idlptjet,:)/=0)
-
+     
 !=====mass of jet before soft drop
 
       mjetbsd=onemassmod(idlptjet+4,pkt)
