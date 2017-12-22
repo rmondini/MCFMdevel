@@ -13,15 +13,13 @@
       include 'types.f'
       include 'constants.f'
       include 'mxpart.f'
+      include 'softdrop_var.f'
       real(dp) :: q(mxpart,4),qjet(mxpart,4),qsoft(mxpart,4)
       real(dp) :: qkt(mxpart,4),qjs(mxpart,4)
       real(dp) :: Rmin
       integer isub,ipow
-
+      integer ns1,ns2,j
       integer :: npj(mxpart,mxpart)
-      integer :: firstjet,npjr(mxpart,mxpart)
-      common/softdrop_variables/firstjet,npjr
-!$omp threadprivate(/softdrop_variables/)
       include 'nf.f'
       include 'npart.f'
       include 'jetcuts.f'
@@ -58,6 +56,7 @@
       
       npj(:,:)=0
       npjr(:,:)=0
+      pinSDj(:,:)=0
       qsoft(:,:)=zip
       qjet(:,:)=zip
       qkt(:,:)=zip
@@ -179,20 +178,23 @@ c--- so if this condition isn't true then there's one jet left at maxjet
  113     continue
          if(singleton) then
             qjs(i,:)=pj1(:)
+            pinSDj(i,:)=nj1(:)
             cycle               !--- nothing to do for this jet
          endif
 !-------have at least two partons in jet so soft drop it
          pt1=sqrt(pj1(1)**2+pj1(2)**2)
          pt2=sqrt(pj2(1)**2+pj2(2)**2)
          R12=r_sd(pj1,pj2)
- !        write(6,*) 'nj1 ',nj1(1:4)
- !        write(6,*) 'nj2 ',nj2(1:4)
- !        write(6,*) pt1,pt2,R12
- !        write(6,*) 'pass sd ',pass_softdrop(pt1,pt2,zcut,R12,R0,beta)
          if(pass_softdrop(pt1,pt2,zcut,R12,R0,beta)) then
 !------jet has passed, keep combined object
             pjtemp(:)=pj1(:)+pj2(:)
             qjs(i,:)=pjtemp(:)
+            ns1 = count(nj1/=0)
+            ns2 = count(nj2/=0)
+            pinSDj(i,:)=nj1(:)
+            do j=ns1+1,ns1+ns2
+               pinSDj(i,j)=nj2(j-ns1)
+            enddo
             cycle
          else
 !-------soft drop harder subjet

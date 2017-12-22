@@ -205,6 +205,12 @@
       idlptjet=0
       lptjet=0._dp
 
+!==== safety check, make sure there is a jet to play with
+      if(jets==0) then 
+         gencuts_VHbb_boost=.true.
+         goto 999
+      endif
+         
       do j=1,jets
 
          if( any(npjr(j,:)==5) .or. any(npjr(j,:)==6) ) then 
@@ -221,8 +227,16 @@
 
       enddo
 
-      nplj = count(npjr(idlptjet,:)/=0)
-     
+!-----check that we have a b-tagged jet
+      if(idlptjet==0) then
+         gencuts_VHbb_boost=.true.
+         goto 999
+      endif
+         
+      
+      nplj = count(pinSDj(idlptjet,:)/=0)
+
+ 
 !=====mass of jet before soft drop
 
       mjetbsd=onemassmod(idlptjet+4,pkt)
@@ -259,6 +273,8 @@
 
       mjet=onemassmod(idlptjet+4,psoft)
 
+  
+      
       rhojet=log(mjet**2/lptjet**2)
 
       if((rhojet.lt.rhojetmin).or.(rhojet.gt.rhojetmax)) then
@@ -266,10 +282,18 @@
          goto 999
       endif
 
+ !     if(count(pinSDj(idlptjet,:)/=0)/=count(npjr(idlptjet,:)/=0)) then
+ !        write(6,*) pinSDj(idlptjet,:)
+ !        write(6,*) npjr(idlptjet,:)
+ !        
+ !        pause
+ !     endif
+      
 !=====n21ddt cut: n21ddt=n21-n21(26%) <= 0
 
       n21jet=n21(p,psoft)
-
+!      write(6,*) n21(p,psoft)/n21_old(p,psoft)
+      
 !      if(n21jet .gt. 0._dp) then
 !         gencuts_VHbb_boost=.true.
 !         goto 999

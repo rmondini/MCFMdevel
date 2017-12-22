@@ -19,7 +19,7 @@ c----calculate variable N_2^1 for boosted H(bb) CMS analysis (arxiv 1709.05543)
       if(nplj.lt.3) then
          n21=0._dp
       else
-         n21=e23corr(p)/e2corr(p)**2
+         n21=e23corr(p)/(e2corr(p)**2)
       endif
       
       return
@@ -43,10 +43,10 @@ c----calculate variable N_2^1 for boosted H(bb) CMS analysis (arxiv 1709.05543)
       ptsum=0._dp
 
       do j=1,nplj
-         ptsum=ptsum+pt(npjr(idlptjet,j),p)
+         ptsum=ptsum+pt(pinSDj(idlptjet,j),p)
       enddo
 
-      zpt=pt(npjr(idlptjet,i),p)/ptsum
+      zpt=pt(pinSDj(idlptjet,i),p)/ptsum
 
       return
       end
@@ -65,14 +65,15 @@ c----calculate variable N_2^1 for boosted H(bb) CMS analysis (arxiv 1709.05543)
       integer :: i,j
       real(dp):: zpt,r
       include 'softdrop_var.f'
+
       e2corr=0._dp
 
       do i=1,nplj-1
          do j=i+1,nplj
-            e2corr=e2corr+zpt(i,p)*zpt(j,p)*r(p,npjr(idlptjet,i),npjr(idlptjet,j))
+            e2corr=e2corr+zpt(i,p)*zpt(j,p)*r(p,pinSDj(idlptjet,i),pinSDj(idlptjet,j))
          enddo
       enddo
-
+      
       return
       end
 
@@ -101,12 +102,16 @@ c----calculate variable N_2^1 for boosted H(bb) CMS analysis (arxiv 1709.05543)
          enddo
       enddo
 
+!     write(6,*) e23corr
+!   write(6,*) e3rmin12(p,1,2,3)
+!        pause
+      
       return
       end
 
 
 
-
+      
       function e3rmin12(p,ii,jj,kk)
       implicit none
       include 'types.f'
@@ -120,9 +125,9 @@ c----calculate variable N_2^1 for boosted H(bb) CMS analysis (arxiv 1709.05543)
       real(dp):: r
       real(dp) e3rmin1val,e3rmin2val,e3rmin3val,rvec(3)
    
-      rvec(1)=r(p,npjr(idlptjet,ii),npjr(idlptjet,jj))
-      rvec(2)=r(p,npjr(idlptjet,ii),npjr(idlptjet,kk))
-      rvec(3)=r(p,npjr(idlptjet,jj),npjr(idlptjet,kk))
+      rvec(1)=r(p,pinSDj(idlptjet,ii),pinSDj(idlptjet,jj))
+      rvec(2)=r(p,pinSDj(idlptjet,ii),pinSDj(idlptjet,kk))
+      rvec(3)=r(p,pinSDj(idlptjet,jj),pinSDj(idlptjet,kk))
 
       e3rmin1val=minval(rvec)
       e3rmin3val=maxval(rvec)
@@ -132,7 +137,9 @@ c----calculate variable N_2^1 for boosted H(bb) CMS analysis (arxiv 1709.05543)
       enddo
 
       e3rmin12=e3rmin1val*e3rmin2val
-
+!----- uncomment this to do 3e1 
+!      e3rmin12=rvec(1)*rvec(2)*rvec(3)
+      
       return
       end
 

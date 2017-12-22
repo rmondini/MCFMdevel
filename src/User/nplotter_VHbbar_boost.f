@@ -151,6 +151,14 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
      &     rhojet,wt,wt2,-6._dp,-2._dp,0.1_dp,'log')
       n=n+1
 
+
+      call bookplot(n,tag,'n21 (0,0.06)',
+     &     n21jet,wt,wt2,0._dp,0.06_dp,0.06_dp,'log')
+      n=n+1
+      call bookplot(n,tag,'n21 (0,0.06)',
+     &     n21jet,wt,wt2,0.06_dp,0.4_dp,0.02_dp,'log')
+      n=n+1
+      
       call bookplot(n,tag,'n21 (0,0.5)',
      &     n21jet,wt,wt2,0._dp,0.5_dp,0.02_dp,'log')
       n=n+1
