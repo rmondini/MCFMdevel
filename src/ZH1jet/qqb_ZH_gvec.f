@@ -58,6 +58,11 @@ c---  adjust for fixed H->bb BR if necessary
           if (FixBrHbb) then
              hdecay=hdecay*GamHbb/GamHbb0
           endif
+       elseif (hdecaymode == 'bbm0') then
+         sH=s(5,6)
+         mb=0._dp
+         hdecay=msqhbb(sH)
+      
        elseif (hdecaymode == 'gaga') then
           sH=s(5,6)
           hdecay=msqhgamgam(sH)

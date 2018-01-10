@@ -54,10 +54,15 @@ C     Deal with Higgs decay
       elseif (hdecaymode == 'bqba') then
          sH=s(5,6)+2*mb**2
          call hbbdecay(p,5,6,hdecay)
+      elseif (hdecaymode == 'bbm0') then
+         mb=0._dp
+         sH=s(5,6)
+         call hbbdecay(p,5,6,hdecay)
+c         write(6,*) GamHbb,GamHbb0
 c---  adjust for fixed H->bb BR if necessary
-         if (FixBrHbb) then
-            fac=fac*GamHbb/GamHbb0
-         endif
+c         if (FixBrHbb) then
+c            fac=fac*GamHbb/GamHbb0
+c         endif
       elseif (hdecaymode == 'gaga') then
          sH=s(5,6)
          hdecay=msqgamgam(hmass)

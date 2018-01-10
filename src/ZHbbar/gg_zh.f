@@ -91,6 +91,10 @@ c--- numerical safety cut
       elseif (hdecaymode == 'bqba') then
          s56=s(5,6)+2*mb**2
          call hbbdecay(p,5,6,hdecay)
+      elseif (hdecaymode == 'bbm0') then
+          s56=s(5,6)
+          mb=0._dp
+          call hbbdecay(p,5,6,hdecay)
       elseif (hdecaymode == 'gaga') then
          s56=s(5,6)
          hdecay=msqgamgam(hmass)
@@ -98,7 +102,7 @@ c--- numerical safety cut
          s56=s(5,6)+s(5,7)+s(5,8)+s(6,7)+s(6,8)+s(7,8)
          call hwwdecay(p,5,6,7,8,hdecay)   
       else
-      write(6,*) 'Unimplemented process in gg_hgg_v'
+      write(6,*) 'Unimplemented process in gg_ZH'
       stop
       endif
       hdecay=hdecay/((s56-hmass**2)**2+(hmass*hwidth)**2)

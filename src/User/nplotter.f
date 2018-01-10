@@ -192,8 +192,8 @@ c--- photon processes also need to know the dipole number
      &    .or.  (kcase==kggVVbx) 
      &    .or.  (kcase==kHVV_tb)) then 
            plotindex=28
-        elseif((kcase.eq.kWHbbar).or.(kcase.eq.kZHbbar)
-     &     .or.(kcase.eq.kWH1jet).or.(kcase.eq.kZH1jet)
+        elseif((kcase.eq.kWHbbar)
+     &     .or.(kcase.eq.kWH1jet)
      &     .or.(kcase.eq.kWHbbdk).or.(kcase.eq.kZHbbdk)
      &          ) then
            plotindex=29
@@ -208,8 +208,11 @@ c--- photon processes also need to know the dipole number
            endif
         elseif (kcase==kHgagaI) then
            plotindex=33
+       
         elseif((kcase.eq.kZHbbnn).or.(kcase.eq.kZHbbjt).or.
-     &           (kcase.eq.kZHn2ac)) then
+     &          (kcase.eq.kZHn2bc).or. (kcase.eq.kZHn2ac).or.
+     &          (kcase.eq.kZHbbar).or. (kcase.eq.kZH1jet)
+     &      ) then
            plotindex=34
         else
           plotindex=1000

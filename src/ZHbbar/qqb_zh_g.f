@@ -119,7 +119,11 @@ C   Deal with Higgs decay
       elseif (hdecaymode == 'bqba') then
           s45=s(j4,j5)+2._dp*mb**2
           hdecay=msqhbb(s45)
-      elseif (hdecaymode == 'gaga') then
+       elseif (hdecaymode == 'bbm0') then
+          s45=s(j4,j5)
+          mb=0._dp
+          hdecay=msqhbb(s45)
+       elseif (hdecaymode == 'gaga') then
           s45=s(j4,j5)
           hdecay=msqhgamgam(s45)
       else

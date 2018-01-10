@@ -101,6 +101,13 @@ c--- translate to momenta to be returned
         p(6,:)=p6(:)
         p(7,:)=ph(4,:)
         p(8,:)=zip
+      elseif (hdecaymode == 'bbm0') then
+        mass=zip
+        call phi3m0(r(12),r(13),p56,p5,p6,wtdk,*999)
+        p(5,:)=p5(:)
+        p(6,:)=p6(:)
+        p(7,:)=ph(4,:)
+        p(8,:)=zip
       elseif (hdecaymode == 'wpwm') then
          npart=7
          

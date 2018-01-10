@@ -52,16 +52,6 @@
 !==== .false. means using pt of sd jet for rhojet
       chooseptktjet=.true.
 
-
-
-
-
-
-
-
-
-
-
 !====== debug
 
 !      write(*,*) 'phase-space point gencuts'
@@ -91,32 +81,6 @@
 !      stop
 
 !====== debug
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 !======= lepton cuts

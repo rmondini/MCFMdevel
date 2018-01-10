@@ -1906,11 +1906,11 @@ c-----------------------------------------------------------------------
          if(nproc.eq.1014) kcase=kZHn2ac
          hdecaymode='bqba'
          doboostanal=.true. 
-         if((nproc.ge.1011).and.(nproc.le.1014)) then
+!         if((nproc.ge.1011).and.(nproc.le.1014)) then
 !------- setup code for massless decays (mb_eff set in hparams)
             hdecaymode='bbm0'            
             mb=0._dp
-         endif
+ !        endif
         call sethparams(br,wwbr,zzbr,tautaubr,gamgambr,zgambr)
         nqcdjets=2
         if(nproc.eq.1012) nqcdjets=3
@@ -7528,7 +7528,10 @@ c-----------------------------------------------------------------------
             BrnRat=brzee*tautaubr
           endif
         elseif (nproc == 621) then
-          hdecaymode='bqba'
+!---- debug, need a more elegant way of sorting this
+!          hdecaymode='bqba'
+           hdecaymode='bbm0'
+           doboostanal=.true. 
           plabel(3)='el'
           plabel(4)='ea'
           plabel(5)='bq'

@@ -179,7 +179,8 @@ c--- therefore filter events using special code and skip normal jet testing
 !==== special version for hadronic decays of Vector bosons at LO
          if(((kcase.eq.kWHbbar).or.(kcase.eq.kZHbbar)
      &        .or.(kcase.eq.kWH1jet).or.(kcase.eq.kZH1jet))
-     &        .and.(hdecaymode=='bqba')) then 
+     &        .and.((hdecaymode=='bqba').or.(hdecaymode=='bbm0'))
+     &       ) then 
             call maketaucut_bb(ptrans,jets,isub,passed_taucut)        
 !------ this branch is for inclusive studies, i.e. dirgam (inc Z,W,H etc.)
          elseif(scet_inc_jets) then
