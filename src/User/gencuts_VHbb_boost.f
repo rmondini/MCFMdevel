@@ -32,8 +32,8 @@
       integer i
       integer lepid,metid,j,njets
       integer :: jets_orig
-      real(dp) :: lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet(mxpart)
-      common/observables_VHbb_boost/lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet
+      real(dp) :: lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet(mxpart),e21val
+      common/observables_VHbb_boost/lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet,e21val
 !$omp threadprivate(/observables_VHbb_boost/) 
 
       jets_orig=jets
@@ -256,6 +256,7 @@
 !=====n21ddt cut: n21ddt=n21-n21(26%) <= 0
 
       n21jet=n21(p,psoft)
+      e21val=e2corr(p)
 !      write(6,*) n21(p,psoft)/n21_old(p,psoft)
       
 !      if(n21jet .gt. 0._dp) then
