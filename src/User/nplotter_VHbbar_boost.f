@@ -32,10 +32,10 @@ c---                1  --> counterterm for real radiation
       integer i,tag
       logical, save::first=.true.
       integer nplotmax
-      real(dp) :: lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet(mxpart)
       common/nplotmax/nplotmax
-      common/observables_VHbb_boost/lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet
-!$omp threadprivate(/observables_VHbb_boost/)
+      real(dp) :: lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet(mxpart),e21val
+      common/observables_VHbb_boost/lptjet,mjet,mjetbsd,rhojet,n21jet,ptV,ptjet,e21val
+!$omp threadprivate(/observables_VHbb_boost/) 
 
 ************************************************************************
 *                                                                      *
@@ -161,6 +161,10 @@ c---   llplot:  equal to "lin"/"log" for linear/log scale
       
       call bookplot(n,tag,'n21 (0,0.5)',
      &     n21jet,wt,wt2,0._dp,0.5_dp,0.02_dp,'log')
+      n=n+1
+
+       call bookplot(n,tag,'e2corr',
+     &     e21val,wt,wt2,0._dp,0.2_dp,0.01_dp,'log')
       n=n+1
 
 ************************************************************************
