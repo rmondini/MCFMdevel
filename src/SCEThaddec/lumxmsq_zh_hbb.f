@@ -63,6 +63,14 @@ c---calculate the 2 Z propagators
       q2413=aveqq*fac*s(2,4)*s(1,3)
      
       
+c---------------------------------
+      write(*,*) 'p(1,4)',p(1,4)
+      write(*,*) 'p(1,1)',p(1,1)
+      write(*,*) 'p(1,2)',p(1,2)
+      write(*,*) 'p(1,3)',p(1,3)
+c---------------------------------
+
+
 !---- constuct log for soft function 
 !      L12=log(s(5,6)/p(5,4)/p(6,4)/4._dp)
 
@@ -116,7 +124,11 @@ c--- two jets functions for b-bar 3
       
       xmsq=xmsq+bit
 
-      
+c---------------------------------
+      write(*,*) 'xmsq=',xmsq
+      stop
+c---------------------------------
+
       enddo
 
       return

@@ -155,14 +155,28 @@ c--- Calculate the required matrix elements
      &   .or. (kcase==kZH__WW)) then
         call lumxmsq_zh(p,xx,z1,z2,QB,iorder,xmsq)
       elseif ((kcase==kZHbbnn)) then 
-         call lumxmsq_zh_hbb(p,xx,QB,iorder,xmsq)
-         
+!         call lumxmsq_zh_hbb(p,xx,QB,iorder,xmsq)
+!---------------------------------------------------------  
+!==== for code testing
+!==== old h->bbg routine 
+!         call lumxmsq_h_bbg(p,iorder,xmsq)
+!==== pp->h+b
+!         call lumxmsq_hb(p,xx,z1,z2,QB,iorder,xmsq)
+!---------------------------------------------------------
+
       elseif (kcase==kgamgam) then
          call lumxmsq_gaga(p,xx,z1,z2,QB,iorder,xmsq)
       elseif (kcase==kW_1jet) then
         call lumxmsq_w1jet(p,xx,z1,z2,QB,iorder,xmsq)
       elseif (kcase==kZ_1jet) then
-        call lumxmsq_z1jet(p,xx,z1,z2,QB,iorder,xmsq)
+!        call lumxmsq_z1jet(p,xx,z1,z2,QB,iorder,xmsq)
+!---------------------------------------------------------  
+!==== for code testing
+!==== old h->bbg routine 
+!         call lumxmsq_h_bbg(p,iorder,xmsq)
+!==== pp->h+b
+         call lumxmsq_hb(p,xx,z1,z2,QB,iorder,xmsq)
+!---------------------------------------------------------
       elseif (kcase==kggfus1) then
         call lumxmsq_h1jet(p,xx,z1,z2,QB,iorder,xmsq)
       elseif ((kcase==kdirgam).or.(kcase==kgamjet)) then

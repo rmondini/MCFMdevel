@@ -55,12 +55,12 @@ c      endif
 !      Iijm(n)=I0*log(al)+I1
 !      enddo
 
-      Iijm(1)=preIijm(j1)
-      Iijm(2)=preIijm(j2)
-      Iijm(3)=preIijm(j3)
-      Iijm(4)=preIijm(j4)
-      Iijm(5)=preIijm(j5)
-      Iijm(6)=preIijm(j6)
+      Iijm(1)=preIijm(j1) 
+      Iijm(2)=preIijm(j2) 
+      Iijm(3)=preIijm(j3) 
+      Iijm(4)=preIijm(j4) 
+      Iijm(5)=preIijm(j5) 
+      Iijm(6)=preIijm(j6) 
 
       soft1(-1)=CA*(half*zeta2
      & -half*log(y12)**2+half*log(y31)**2-half*log(y23)**2

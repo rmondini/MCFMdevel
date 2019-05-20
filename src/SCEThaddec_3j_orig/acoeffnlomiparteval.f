@@ -1,0 +1,4504 @@
+
+      subroutine acoeffnlomiparteval(yy,zz,logmh2omu2,a1mipart,a2mipart) 
+      implicit none 
+      include 'types.f'
+      include 'constants.f' 
+      include 'ewcouple.f' 
+      include 'masses.f' 
+      include 'nf.f'
+      include 'scet_const.f'
+      real(dp) xx
+      real(dp),intent(in)::yy,zz,logmh2omu2
+      real(dp),intent(out)::a1mipart(5),a2mipart(5)
+
+      double precision Li2,Li3,Li4
+      external Li2,Li3,Li4
+
+c--- initialize to zero
+      a1mipart(:)=0._dp
+      a2mipart(:)=0._dp
+
+      xx=one-yy-zz
+
+!==================================================================
+
+!==== eps^(-2)
+      a1mipart(1) = -(((1 + 4*cf*Nc)*pi*rt2*(yy + zz))/(Nc*yy*zz))
+
+!==== eps^(-1)
+      a1mipart(2) = (pi*rt2*(yy + zz)*(logmh2omu2 + 4*cf*logmh2omu2*Nc - log(xx) + 
+     -      log(-((-1 + yy)/xx)) + log(-((-1 + xx)/yy)) - 
+     -      log(((-1 + xx)*(-1 + yy))/(xx*yy)) + log(yy) + 
+     -      2*cf*Nc*log(yy) + log(-((-1 + zz)/xx)) - 
+     -      log(-((-1 + zz)/yy)) - 2*cf*Nc*log(-((-1 + zz)/yy)) + 
+     -      log(-((-1 + xx)/zz)) - log(-((-1 + yy)/zz)) - 
+     -      2*cf*Nc*log(-((-1 + yy)/zz)) - 
+     -      log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2*cf*Nc*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + log(zz) + 
+     -      2*cf*Nc*log(zz)))/(Nc*yy*zz)
+
+!==== eps^( 0)
+      a1mipart(3) = (pi*(12*xx*yy - 6*logmh2omu2**2*xx*yy - 12*cf*Nc*xx*yy - 
+     -      24*cf*logmh2omu2**2*Nc*xx*yy + pi**2*xx*yy + 
+     -      4*cf*Nc*pi**2*xx*yy + 12*xx*zz - 6*logmh2omu2**2*xx*zz - 
+     -      12*cf*Nc*xx*zz - 24*cf*logmh2omu2**2*Nc*xx*zz + 
+     -      pi**2*xx*zz + 4*cf*Nc*pi**2*xx*zz - 
+     -      12*xx*(yy + zz)*Li2((-1 + xx + yy)/xx) - 
+     -      12*xx*(yy + zz)*Li2((-1 + xx + yy)/yy) + 
+     -      12*xx*yy*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      12*xx*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      12*xx*yy*Li2((-1 + xx + zz)/xx) - 
+     -      12*xx*zz*Li2((-1 + xx + zz)/xx) - 
+     -      12*xx*yy*Li2((-1 + xx + zz)/zz) - 
+     -      12*xx*zz*Li2((-1 + xx + zz)/zz) + 
+     -      12*xx*yy*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      12*xx*zz*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      12*xx*yy*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx*yy*Li2((-1 + yy + zz)/yy) + 
+     -      12*xx*zz*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx*zz*Li2((-1 + yy + zz)/yy) + 
+     -      12*xx*yy*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx*yy*Li2((-1 + yy + zz)/zz) + 
+     -      12*xx*zz*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx*zz*Li2((-1 + yy + zz)/zz) - 
+     -      12*xx*yy*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx*yy*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      12*logmh2omu2*xx*yy*log(xx) + 12*logmh2omu2*xx*zz*log(xx) + 
+     -      6*xx*yy*log(xx)**2 + 6*xx*zz*log(xx)**2 - 
+     -      12*logmh2omu2*xx*yy*log(-((-1 + yy)/xx)) - 
+     -      12*logmh2omu2*xx*zz*log(-((-1 + yy)/xx)) - 
+     -      12*logmh2omu2*xx*yy*log(-((-1 + xx)/yy)) - 
+     -      12*logmh2omu2*xx*zz*log(-((-1 + xx)/yy)) - 
+     -      12*xx*yy*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      12*xx*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      12*logmh2omu2*xx*yy*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      12*logmh2omu2*xx*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      12*logmh2omu2*xx*yy*log(yy) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*log(yy) - 
+     -      12*logmh2omu2*xx*zz*log(yy) - 
+     -      24*cf*logmh2omu2*Nc*xx*zz*log(yy) - 
+     -      12*xx*yy*log(-((-1 + yy)/xx))*log(yy) - 
+     -      12*xx*zz*log(-((-1 + yy)/xx))*log(yy) - 
+     -      6*xx*yy*log(yy)**2 - 12*cf*Nc*xx*yy*log(yy)**2 - 
+     -      6*xx*zz*log(yy)**2 - 12*cf*Nc*xx*zz*log(yy)**2 - 
+     -      12*logmh2omu2*xx*yy*log(-((-1 + zz)/xx)) - 
+     -      12*logmh2omu2*xx*zz*log(-((-1 + zz)/xx)) + 
+     -      12*logmh2omu2*xx*yy*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*xx*zz*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*xx*zz*log(-((-1 + zz)/yy)) - 
+     -      12*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      24*cf*Nc*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      12*logmh2omu2*xx*yy*log(-((-1 + xx)/zz)) - 
+     -      12*logmh2omu2*xx*zz*log(-((-1 + xx)/zz)) - 
+     -      12*xx*yy*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      12*xx*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      12*logmh2omu2*xx*yy*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx*zz*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx*zz*log(-((-1 + yy)/zz)) - 
+     -      12*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      24*cf*Nc*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      12*xx*yy*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*xx*yy*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*xx*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*xx*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx*yy*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      12*logmh2omu2*xx*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      12*logmh2omu2*xx*yy*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*xx*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*cf*Nc*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*xx*yy*log(zz) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*log(zz) - 
+     -      12*logmh2omu2*xx*zz*log(zz) - 
+     -      24*cf*logmh2omu2*Nc*xx*zz*log(zz) - 
+     -      12*xx*yy*log(-((-1 + zz)/xx))*log(zz) - 
+     -      12*xx*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      12*xx*yy*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*xx*yy*log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*xx*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*xx*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      6*xx*yy*log(zz)**2 - 12*cf*Nc*xx*yy*log(zz)**2 - 
+     -      6*xx*zz*log(zz)**2 - 12*cf*Nc*xx*zz*log(zz)**2))/
+     -  (6.*Nc*rt2*xx*yy*zz)  
+
+!==== eps^( 1)
+      a1mipart(4) = (pi*(24*xx**3*yy - 12*logmh2omu2*xx**3*yy + 
+     -      2*logmh2omu2**3*xx**3*yy - 24*cf*Nc*xx**3*yy + 
+     -      12*cf*logmh2omu2*Nc*xx**3*yy + 
+     -      8*cf*logmh2omu2**3*Nc*xx**3*yy - 
+     -      logmh2omu2*pi**2*xx**3*yy - 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx**3*yy + 24*xx**2*yy**2 - 
+     -      12*logmh2omu2*xx**2*yy**2 + 2*logmh2omu2**3*xx**2*yy**2 - 
+     -      24*cf*Nc*xx**2*yy**2 + 12*cf*logmh2omu2*Nc*xx**2*yy**2 + 
+     -      8*cf*logmh2omu2**3*Nc*xx**2*yy**2 - 
+     -      logmh2omu2*pi**2*xx**2*yy**2 - 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx**2*yy**2 + 28*xx**3*yy*zeta3 + 
+     -      112*cf*Nc*xx**3*yy*zeta3 + 28*xx**2*yy**2*zeta3 + 
+     -      112*cf*Nc*xx**2*yy**2*zeta3 + 24*xx**3*zz - 
+     -      12*logmh2omu2*xx**3*zz + 2*logmh2omu2**3*xx**3*zz - 
+     -      24*cf*Nc*xx**3*zz + 12*cf*logmh2omu2*Nc*xx**3*zz + 
+     -      8*cf*logmh2omu2**3*Nc*xx**3*zz - 
+     -      logmh2omu2*pi**2*xx**3*zz - 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx**3*zz + 48*xx**2*yy*zz - 
+     -      24*logmh2omu2*xx**2*yy*zz + 4*logmh2omu2**3*xx**2*yy*zz - 
+     -      48*cf*Nc*xx**2*yy*zz + 24*cf*logmh2omu2*Nc*xx**2*yy*zz + 
+     -      16*cf*logmh2omu2**3*Nc*xx**2*yy*zz - 
+     -      2*logmh2omu2*pi**2*xx**2*yy*zz - 
+     -      8*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz + 24*xx*yy**2*zz - 
+     -      12*logmh2omu2*xx*yy**2*zz + 2*logmh2omu2**3*xx*yy**2*zz - 
+     -      24*cf*Nc*xx*yy**2*zz + 12*cf*logmh2omu2*Nc*xx*yy**2*zz + 
+     -      8*cf*logmh2omu2**3*Nc*xx*yy**2*zz - 
+     -      logmh2omu2*pi**2*xx*yy**2*zz - 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx*yy**2*zz + 28*xx**3*zeta3*zz + 
+     -      112*cf*Nc*xx**3*zeta3*zz + 56*xx**2*yy*zeta3*zz + 
+     -      224*cf*Nc*xx**2*yy*zeta3*zz + 28*xx*yy**2*zeta3*zz + 
+     -      112*cf*Nc*xx*yy**2*zeta3*zz + 24*xx**2*zz**2 - 
+     -      12*logmh2omu2*xx**2*zz**2 + 2*logmh2omu2**3*xx**2*zz**2 - 
+     -      24*cf*Nc*xx**2*zz**2 + 12*cf*logmh2omu2*Nc*xx**2*zz**2 + 
+     -      8*cf*logmh2omu2**3*Nc*xx**2*zz**2 - 
+     -      logmh2omu2*pi**2*xx**2*zz**2 - 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx**2*zz**2 + 24*xx*yy*zz**2 - 
+     -      12*logmh2omu2*xx*yy*zz**2 + 2*logmh2omu2**3*xx*yy*zz**2 - 
+     -      24*cf*Nc*xx*yy*zz**2 + 12*cf*logmh2omu2*Nc*xx*yy*zz**2 + 
+     -      8*cf*logmh2omu2**3*Nc*xx*yy*zz**2 - 
+     -      logmh2omu2*pi**2*xx*yy*zz**2 - 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx*yy*zz**2 + 
+     -      28*xx**2*zeta3*zz**2 + 112*cf*Nc*xx**2*zeta3*zz**2 + 
+     -      28*xx*yy*zeta3*zz**2 + 112*cf*Nc*xx*yy*zeta3*zz**2 - 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      12*logmh2omu2*xx**2*yy**2*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      24*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      12*logmh2omu2*xx*yy**2*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      12*logmh2omu2*xx**2*zz**2*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      12*logmh2omu2*xx*yy*zz**2*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/xx) + 
+     -      12*logmh2omu2*xx**2*yy**2*Li2((-1 + xx + zz)/xx) + 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/xx) + 
+     -      24*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + zz)/xx) + 
+     -      12*logmh2omu2*xx*yy**2*zz*Li2((-1 + xx + zz)/xx) + 
+     -      12*logmh2omu2*xx**2*zz**2*Li2((-1 + xx + zz)/xx) + 
+     -      12*logmh2omu2*xx*yy*zz**2*Li2((-1 + xx + zz)/xx) + 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/zz) + 
+     -      12*logmh2omu2*xx**2*yy**2*Li2((-1 + xx + zz)/zz) + 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/zz) + 
+     -      24*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + zz)/zz) + 
+     -      12*logmh2omu2*xx*yy**2*zz*Li2((-1 + xx + zz)/zz) + 
+     -      12*logmh2omu2*xx**2*zz**2*Li2((-1 + xx + zz)/zz) + 
+     -      12*logmh2omu2*xx*yy*zz**2*Li2((-1 + xx + zz)/zz) - 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      12*logmh2omu2*xx**2*yy**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      24*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      12*logmh2omu2*xx*yy**2*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      12*logmh2omu2*xx**2*zz**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      12*logmh2omu2*xx*yy*zz**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/yy) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy) - 
+     -      12*logmh2omu2*xx**2*yy**2*Li2((-1 + yy + zz)/yy) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy**2*Li2((-1 + yy + zz)/yy) - 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/yy) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy) + 
+     -      12*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      24*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      48*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      12*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) - 
+     -      12*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) - 
+     -      12*logmh2omu2*xx**2*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      12*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      12*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      12*yy**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/zz) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz) - 
+     -      12*logmh2omu2*xx**2*yy**2*Li2((-1 + yy + zz)/zz) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy**2*Li2((-1 + yy + zz)/zz) - 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/zz) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz) + 
+     -      12*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      24*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      48*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      12*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) - 
+     -      12*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) - 
+     -      12*logmh2omu2*xx**2*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      12*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      12*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      12*yy**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      12*logmh2omu2*xx**2*yy**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      24*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      48*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      12*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      12*logmh2omu2*xx**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*zz**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      12*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx**3*yy*Li3((-1 + xx + yy)/xx) - 
+     -      12*xx**2*yy**2*Li3((-1 + xx + yy)/xx) - 
+     -      12*xx**3*zz*Li3((-1 + xx + yy)/xx) - 
+     -      24*xx**2*yy*zz*Li3((-1 + xx + yy)/xx) - 
+     -      12*xx*yy**2*zz*Li3((-1 + xx + yy)/xx) - 
+     -      12*xx**2*zz**2*Li3((-1 + xx + yy)/xx) - 
+     -      12*xx*yy*zz**2*Li3((-1 + xx + yy)/xx) - 
+     -      12*xx**3*yy*Li3((-1 + xx + yy)/yy) - 
+     -      12*xx**2*yy**2*Li3((-1 + xx + yy)/yy) - 
+     -      12*xx**3*zz*Li3((-1 + xx + yy)/yy) - 
+     -      24*xx**2*yy*zz*Li3((-1 + xx + yy)/yy) - 
+     -      12*xx*yy**2*zz*Li3((-1 + xx + yy)/yy) - 
+     -      12*xx**2*zz**2*Li3((-1 + xx + yy)/yy) - 
+     -      12*xx*yy*zz**2*Li3((-1 + xx + yy)/yy) + 
+     -      12*xx**3*yy*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      12*xx**2*yy**2*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      12*xx**3*zz*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      24*xx**2*yy*zz*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      12*xx*yy**2*zz*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      12*xx**2*zz**2*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      12*xx*yy*zz**2*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      12*xx**3*yy*Li3((-1 + xx + zz)/xx) - 
+     -      12*xx**2*yy**2*Li3((-1 + xx + zz)/xx) - 
+     -      12*xx**3*zz*Li3((-1 + xx + zz)/xx) - 
+     -      24*xx**2*yy*zz*Li3((-1 + xx + zz)/xx) - 
+     -      12*xx*yy**2*zz*Li3((-1 + xx + zz)/xx) - 
+     -      12*xx**2*zz**2*Li3((-1 + xx + zz)/xx) - 
+     -      12*xx*yy*zz**2*Li3((-1 + xx + zz)/xx) - 
+     -      12*xx**3*yy*Li3((-1 + xx + zz)/zz) - 
+     -      12*xx**2*yy**2*Li3((-1 + xx + zz)/zz) - 
+     -      12*xx**3*zz*Li3((-1 + xx + zz)/zz) - 
+     -      24*xx**2*yy*zz*Li3((-1 + xx + zz)/zz) - 
+     -      12*xx*yy**2*zz*Li3((-1 + xx + zz)/zz) - 
+     -      12*xx**2*zz**2*Li3((-1 + xx + zz)/zz) - 
+     -      12*xx*yy*zz**2*Li3((-1 + xx + zz)/zz) + 
+     -      12*xx**3*yy*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      12*xx**2*yy**2*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      12*xx**3*zz*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      24*xx**2*yy*zz*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      12*xx*yy**2*zz*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      12*xx**2*zz**2*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      12*xx*yy*zz**2*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      12*xx**3*yy*Li3((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/yy) + 
+     -      12*xx**2*yy**2*Li3((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx**2*yy**2*Li3((-1 + yy + zz)/yy) + 
+     -      12*xx**3*zz*Li3((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/yy) + 
+     -      24*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) + 
+     -      48*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) + 
+     -      12*xx*yy**2*zz*Li3((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/yy) + 
+     -      12*xx**2*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx**2*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      12*xx*yy*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      12*xx**3*yy*Li3((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/zz) + 
+     -      12*xx**2*yy**2*Li3((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx**2*yy**2*Li3((-1 + yy + zz)/zz) + 
+     -      12*xx**3*zz*Li3((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/zz) + 
+     -      24*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      48*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      12*xx*yy**2*zz*Li3((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/zz) + 
+     -      12*xx**2*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx**2*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      12*xx*yy*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/zz) - 
+     -      12*xx**3*yy*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx**2*yy**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx**2*yy**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx**3*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      24*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      48*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx*yy**2*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx**2*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx**2*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx*yy*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(xx) + pi**2*xx**3*yy*log(xx) - 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(xx) + 
+     -      pi**2*xx**2*yy**2*log(xx) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(xx) + pi**2*xx**3*zz*log(xx) - 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(xx) + 
+     -      2*pi**2*xx**2*yy*zz*log(xx) - 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(xx) + 
+     -      pi**2*xx*yy**2*zz*log(xx) - 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(xx) + 
+     -      pi**2*xx**2*zz**2*log(xx) - 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(xx) + 
+     -      pi**2*xx*yy*zz**2*log(xx) + 
+     -      12*xx**3*yy*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      12*xx**2*yy**2*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      12*xx**3*zz*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      24*xx**2*yy*zz*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      12*xx*yy**2*zz*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      12*xx**2*zz**2*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      12*xx*yy*zz**2*Li2((-1 + xx + zz)/zz)*log(xx) - 
+     -      6*logmh2omu2*xx**3*yy*log(xx)**2 - 
+     -      6*logmh2omu2*xx**2*yy**2*log(xx)**2 - 
+     -      6*logmh2omu2*xx**3*zz*log(xx)**2 - 
+     -      12*logmh2omu2*xx**2*yy*zz*log(xx)**2 - 
+     -      6*logmh2omu2*xx*yy**2*zz*log(xx)**2 - 
+     -      6*logmh2omu2*xx**2*zz**2*log(xx)**2 - 
+     -      6*logmh2omu2*xx*yy*zz**2*log(xx)**2 - 
+     -      2*xx**3*yy*log(xx)**3 - 2*xx**2*yy**2*log(xx)**3 - 
+     -      2*xx**3*zz*log(xx)**3 - 4*xx**2*yy*zz*log(xx)**3 - 
+     -      2*xx*yy**2*zz*log(xx)**3 - 2*xx**2*zz**2*log(xx)**3 - 
+     -      2*xx*yy*zz**2*log(xx)**3 + 
+     -      12*xx*(xx + yy)*(xx + zz)*(yy + zz)*Li2((-1 + xx + yy)/yy)*
+     -       (logmh2omu2 + log(xx)) - 
+     -      24*xx**3*yy*log(-((-1 + yy)/xx)) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + yy)/xx)) - 
+     -      pi**2*xx**3*yy*log(-((-1 + yy)/xx)) - 
+     -      24*xx**2*yy**2*log(-((-1 + yy)/xx)) + 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(-((-1 + yy)/xx)) - 
+     -      pi**2*xx**2*yy**2*log(-((-1 + yy)/xx)) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + yy)/xx)) - 
+     -      pi**2*xx**3*zz*log(-((-1 + yy)/xx)) - 
+     -      24*xx**2*yy*zz*log(-((-1 + yy)/xx)) + 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + yy)/xx)) - 
+     -      2*pi**2*xx**2*yy*zz*log(-((-1 + yy)/xx)) - 
+     -      24*xx*yy**2*zz*log(-((-1 + yy)/xx)) + 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + yy)/xx)) - 
+     -      pi**2*xx*yy**2*zz*log(-((-1 + yy)/xx)) + 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(-((-1 + yy)/xx)) - 
+     -      pi**2*xx**2*zz**2*log(-((-1 + yy)/xx)) + 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + yy)/xx)) - 
+     -      pi**2*xx*yy*zz**2*log(-((-1 + yy)/xx)) - 
+     -      24*xx**3*yy*log(-((-1 + xx)/yy)) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + xx)/yy)) - 
+     -      pi**2*xx**3*yy*log(-((-1 + xx)/yy)) - 
+     -      24*xx**2*yy**2*log(-((-1 + xx)/yy)) + 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(-((-1 + xx)/yy)) - 
+     -      pi**2*xx**2*yy**2*log(-((-1 + xx)/yy)) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + xx)/yy)) - 
+     -      pi**2*xx**3*zz*log(-((-1 + xx)/yy)) - 
+     -      24*xx**2*yy*zz*log(-((-1 + xx)/yy)) + 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + xx)/yy)) - 
+     -      2*pi**2*xx**2*yy*zz*log(-((-1 + xx)/yy)) - 
+     -      24*xx*yy**2*zz*log(-((-1 + xx)/yy)) + 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + xx)/yy)) - 
+     -      pi**2*xx*yy**2*zz*log(-((-1 + xx)/yy)) + 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(-((-1 + xx)/yy)) - 
+     -      pi**2*xx**2*zz**2*log(-((-1 + xx)/yy)) + 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + xx)/yy)) - 
+     -      pi**2*xx*yy*zz**2*log(-((-1 + xx)/yy)) + 
+     -      12*logmh2omu2*xx**3*yy*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      12*logmh2omu2*xx**2*yy**2*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      12*logmh2omu2*xx**3*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      24*logmh2omu2*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      12*logmh2omu2*xx*yy**2*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      12*logmh2omu2*xx**2*zz**2*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      12*logmh2omu2*xx*yy*zz**2*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      6*xx**3*yy*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      6*xx**2*yy**2*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      6*xx**3*zz*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      12*xx**2*yy*zz*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      6*xx*yy**2*zz*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      6*xx**2*zz**2*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      6*xx*yy*zz**2*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      24*xx**3*yy*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      6*logmh2omu2**2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      pi**2*xx**3*yy*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      24*xx**2*yy**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      6*logmh2omu2**2*xx**2*yy**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      pi**2*xx**2*yy**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      6*logmh2omu2**2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      pi**2*xx**3*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      24*xx**2*yy*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      12*logmh2omu2**2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      2*pi**2*xx**2*yy*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      24*xx*yy**2*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      6*logmh2omu2**2*xx*yy**2*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      pi**2*xx*yy**2*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      6*logmh2omu2**2*xx**2*zz**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      pi**2*xx**2*zz**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      6*logmh2omu2**2*xx*yy*zz**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      pi**2*xx*yy*zz**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(yy) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*log(yy) - 
+     -      pi**2*xx**3*yy*log(yy) - 2*cf*Nc*pi**2*xx**3*yy*log(yy) + 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(yy) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy**2*log(yy) - 
+     -      pi**2*xx**2*yy**2*log(yy) - 
+     -      2*cf*Nc*pi**2*xx**2*yy**2*log(yy) - 12*xx**3*zz*log(yy) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(yy) - 
+     -      12*cf*Nc*xx**3*zz*log(yy) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*log(yy) - 
+     -      pi**2*xx**3*zz*log(yy) - 2*cf*Nc*pi**2*xx**3*zz*log(yy) - 
+     -      12*xx**2*yy*zz*log(yy) + 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(yy) - 
+     -      36*cf*Nc*xx**2*yy*zz*log(yy) + 
+     -      24*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(yy) - 
+     -      2*pi**2*xx**2*yy*zz*log(yy) - 
+     -      4*cf*Nc*pi**2*xx**2*yy*zz*log(yy) + 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(yy) - 
+     -      24*cf*Nc*xx*yy**2*zz*log(yy) + 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(yy) - 
+     -      pi**2*xx*yy**2*zz*log(yy) - 
+     -      2*cf*Nc*pi**2*xx*yy**2*zz*log(yy) - 
+     -      12*xx**2*zz**2*log(yy) + 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(yy) - 
+     -      12*cf*Nc*xx**2*zz**2*log(yy) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*zz**2*log(yy) - 
+     -      pi**2*xx**2*zz**2*log(yy) - 
+     -      2*cf*Nc*pi**2*xx**2*zz**2*log(yy) - 
+     -      12*xx*yy*zz**2*log(yy) + 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(yy) - 
+     -      12*cf*Nc*xx*yy*zz**2*log(yy) + 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(yy) - 
+     -      pi**2*xx*yy*zz**2*log(yy) - 
+     -      2*cf*Nc*pi**2*xx*yy*zz**2*log(yy) - 
+     -      12*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      24*cf*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      12*xx**2*yy**2*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      24*cf*Nc*xx**2*yy**2*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      12*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      24*cf*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      24*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      48*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      12*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      24*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      12*xx**2*zz**2*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      24*cf*Nc*xx**2*zz**2*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      12*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      24*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      12*logmh2omu2*xx**3*yy*log(-((-1 + yy)/xx))*log(yy) + 
+     -      12*logmh2omu2*xx**2*yy**2*log(-((-1 + yy)/xx))*log(yy) + 
+     -      12*logmh2omu2*xx**3*zz*log(-((-1 + yy)/xx))*log(yy) + 
+     -      24*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/xx))*log(yy) + 
+     -      12*logmh2omu2*xx*yy**2*zz*log(-((-1 + yy)/xx))*log(yy) + 
+     -      12*logmh2omu2*xx**2*zz**2*log(-((-1 + yy)/xx))*log(yy) + 
+     -      12*logmh2omu2*xx*yy*zz**2*log(-((-1 + yy)/xx))*log(yy) + 
+     -      6*logmh2omu2*xx**3*yy*log(yy)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx**3*yy*log(yy)**2 + 
+     -      6*logmh2omu2*xx**2*yy**2*log(yy)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx**2*yy**2*log(yy)**2 + 
+     -      6*logmh2omu2*xx**3*zz*log(yy)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx**3*zz*log(yy)**2 + 
+     -      12*logmh2omu2*xx**2*yy*zz*log(yy)**2 + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)**2 + 
+     -      6*logmh2omu2*xx*yy**2*zz*log(yy)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx*yy**2*zz*log(yy)**2 + 
+     -      6*logmh2omu2*xx**2*zz**2*log(yy)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx**2*zz**2*log(yy)**2 + 
+     -      6*logmh2omu2*xx*yy*zz**2*log(yy)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx*yy*zz**2*log(yy)**2 + 
+     -      6*xx**3*yy*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      6*xx**2*yy**2*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      6*xx**3*zz*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      12*xx**2*yy*zz*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      6*xx*yy**2*zz*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      6*xx**2*zz**2*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      6*xx*yy*zz**2*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      2*xx**3*yy*log(yy)**3 + 4*cf*Nc*xx**3*yy*log(yy)**3 + 
+     -      2*xx**2*yy**2*log(yy)**3 + 4*cf*Nc*xx**2*yy**2*log(yy)**3 + 
+     -      2*xx**3*zz*log(yy)**3 + 4*cf*Nc*xx**3*zz*log(yy)**3 + 
+     -      4*xx**2*yy*zz*log(yy)**3 + 8*cf*Nc*xx**2*yy*zz*log(yy)**3 + 
+     -      2*xx*yy**2*zz*log(yy)**3 + 4*cf*Nc*xx*yy**2*zz*log(yy)**3 + 
+     -      2*xx**2*zz**2*log(yy)**3 + 4*cf*Nc*xx**2*zz**2*log(yy)**3 + 
+     -      2*xx*yy*zz**2*log(yy)**3 + 4*cf*Nc*xx*yy*zz**2*log(yy)**3 + 
+     -      12*xx*(xx + yy)*(xx + zz)*(yy + zz)*Li2((-1 + xx + yy)/xx)*
+     -       (logmh2omu2 + log(yy)) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + zz)/xx)) - 
+     -      pi**2*xx**3*yy*log(-((-1 + zz)/xx)) + 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(-((-1 + zz)/xx)) - 
+     -      pi**2*xx**2*yy**2*log(-((-1 + zz)/xx)) - 
+     -      24*xx**3*zz*log(-((-1 + zz)/xx)) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + zz)/xx)) - 
+     -      pi**2*xx**3*zz*log(-((-1 + zz)/xx)) - 
+     -      24*xx**2*yy*zz*log(-((-1 + zz)/xx)) + 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/xx)) - 
+     -      2*pi**2*xx**2*yy*zz*log(-((-1 + zz)/xx)) + 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + zz)/xx)) - 
+     -      pi**2*xx*yy**2*zz*log(-((-1 + zz)/xx)) - 
+     -      24*xx**2*zz**2*log(-((-1 + zz)/xx)) + 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(-((-1 + zz)/xx)) - 
+     -      pi**2*xx**2*zz**2*log(-((-1 + zz)/xx)) - 
+     -      24*xx*yy*zz**2*log(-((-1 + zz)/xx)) + 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + zz)/xx)) - 
+     -      pi**2*xx*yy*zz**2*log(-((-1 + zz)/xx)) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + zz)/yy)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*log(-((-1 + zz)/yy)) + 
+     -      pi**2*xx**3*yy*log(-((-1 + zz)/yy)) + 
+     -      2*cf*Nc*pi**2*xx**3*yy*log(-((-1 + zz)/yy)) - 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(-((-1 + zz)/yy)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy**2*log(-((-1 + zz)/yy)) + 
+     -      pi**2*xx**2*yy**2*log(-((-1 + zz)/yy)) + 
+     -      2*cf*Nc*pi**2*xx**2*yy**2*log(-((-1 + zz)/yy)) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*log(-((-1 + zz)/yy)) + 
+     -      pi**2*xx**3*zz*log(-((-1 + zz)/yy)) + 
+     -      2*cf*Nc*pi**2*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      24*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      48*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      24*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      2*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      4*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      24*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      48*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      2*cf*Nc*pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      pi**2*xx**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      2*cf*Nc*pi**2*xx**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      24*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      48*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      2*cf*Nc*pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      24*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      48*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + xx)/zz)) - 
+     -      pi**2*xx**3*yy*log(-((-1 + xx)/zz)) + 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(-((-1 + xx)/zz)) - 
+     -      pi**2*xx**2*yy**2*log(-((-1 + xx)/zz)) - 
+     -      24*xx**3*zz*log(-((-1 + xx)/zz)) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + xx)/zz)) - 
+     -      pi**2*xx**3*zz*log(-((-1 + xx)/zz)) - 
+     -      24*xx**2*yy*zz*log(-((-1 + xx)/zz)) + 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + xx)/zz)) - 
+     -      2*pi**2*xx**2*yy*zz*log(-((-1 + xx)/zz)) + 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + xx)/zz)) - 
+     -      pi**2*xx*yy**2*zz*log(-((-1 + xx)/zz)) - 
+     -      24*xx**2*zz**2*log(-((-1 + xx)/zz)) + 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(-((-1 + xx)/zz)) - 
+     -      pi**2*xx**2*zz**2*log(-((-1 + xx)/zz)) - 
+     -      24*xx*yy*zz**2*log(-((-1 + xx)/zz)) + 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + xx)/zz)) - 
+     -      pi**2*xx*yy*zz**2*log(-((-1 + xx)/zz)) + 
+     -      12*logmh2omu2*xx**3*yy*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      12*logmh2omu2*xx**2*yy**2*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      12*logmh2omu2*xx**3*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      24*logmh2omu2*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      12*logmh2omu2*xx*yy**2*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      12*logmh2omu2*xx**2*zz**2*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      12*logmh2omu2*xx*yy*zz**2*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      6*xx**3*yy*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      6*xx**2*yy**2*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      6*xx**3*zz*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      12*xx**2*yy*zz*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      6*xx*yy**2*zz*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      6*xx**2*zz**2*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      6*xx*yy*zz**2*log(xx)**2*log(-((-1 + xx)/zz)) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + yy)/zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*log(-((-1 + yy)/zz)) + 
+     -      pi**2*xx**3*yy*log(-((-1 + yy)/zz)) + 
+     -      2*cf*Nc*pi**2*xx**3*yy*log(-((-1 + yy)/zz)) - 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy**2*log(-((-1 + yy)/zz)) + 
+     -      pi**2*xx**2*yy**2*log(-((-1 + yy)/zz)) + 
+     -      2*cf*Nc*pi**2*xx**2*yy**2*log(-((-1 + yy)/zz)) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*log(-((-1 + yy)/zz)) + 
+     -      pi**2*xx**3*zz*log(-((-1 + yy)/zz)) + 
+     -      2*cf*Nc*pi**2*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      24*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      48*cf*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      24*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      2*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      4*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      24*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      48*cf*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      pi**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      2*cf*Nc*pi**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      pi**2*xx**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      2*cf*Nc*pi**2*xx**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      24*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      48*cf*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      pi**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      2*cf*Nc*pi**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      24*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      48*cf*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      12*logmh2omu2*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      12*logmh2omu2*xx**2*yy**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      12*logmh2omu2*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      24*logmh2omu2*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      48*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      12*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      12*logmh2omu2*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      12*logmh2omu2*xx**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      12*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      12*logmh2omu2*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      12*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      6*xx**3*yy*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*Nc*xx**3*yy*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      6*xx**2*yy**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*Nc*xx**2*yy**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      6*xx**3*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*Nc*xx**3*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      12*xx**2*yy*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      24*cf*Nc*xx**2*yy*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      6*xx*yy**2*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*Nc*xx*yy**2*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      6*xx**2*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*Nc*xx**2*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      6*xx*yy*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      12*cf*Nc*xx*yy*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      6*logmh2omu2**2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      pi**2*xx**3*yy*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      6*logmh2omu2**2*xx**2*yy**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      pi**2*xx**2*yy**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      24*xx**3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      6*logmh2omu2**2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      pi**2*xx**3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      24*xx**2*yy*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      12*logmh2omu2**2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      2*pi**2*xx**2*yy*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      6*logmh2omu2**2*xx*yy**2*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      pi**2*xx*yy**2*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      24*xx**2*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      6*logmh2omu2**2*xx**2*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      pi**2*xx**2*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      24*xx*yy*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      6*logmh2omu2**2*xx*yy*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      pi**2*xx*yy*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      6*logmh2omu2**2*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      pi**2*xx**3*yy*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2*cf*Nc*pi**2*xx**3*yy*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6*logmh2omu2**2*xx**2*yy**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      pi**2*xx**2*yy**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2*cf*Nc*pi**2*xx**2*yy**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6*logmh2omu2**2*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      pi**2*xx**3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2*cf*Nc*pi**2*xx**3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*logmh2omu2**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      48*cf*Nc*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2*pi**2*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      4*cf*Nc*pi**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6*logmh2omu2**2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      48*cf*Nc*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      pi**2*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2*cf*Nc*pi**2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6*logmh2omu2**2*xx**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      pi**2*xx**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2*cf*Nc*pi**2*xx**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6*logmh2omu2**2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      48*cf*Nc*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      pi**2*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2*cf*Nc*pi**2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      48*cf*Nc*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 12*xx**3*yy*log(zz) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(zz) - 
+     -      12*cf*Nc*xx**3*yy*log(zz) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*log(zz) - 
+     -      pi**2*xx**3*yy*log(zz) - 2*cf*Nc*pi**2*xx**3*yy*log(zz) - 
+     -      12*xx**2*yy**2*log(zz) + 
+     -      6*logmh2omu2**2*xx**2*yy**2*log(zz) - 
+     -      12*cf*Nc*xx**2*yy**2*log(zz) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy**2*log(zz) - 
+     -      pi**2*xx**2*yy**2*log(zz) - 
+     -      2*cf*Nc*pi**2*xx**2*yy**2*log(zz) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(zz) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*log(zz) - 
+     -      pi**2*xx**3*zz*log(zz) - 2*cf*Nc*pi**2*xx**3*zz*log(zz) - 
+     -      12*xx**2*yy*zz*log(zz) + 
+     -      12*logmh2omu2**2*xx**2*yy*zz*log(zz) - 
+     -      36*cf*Nc*xx**2*yy*zz*log(zz) + 
+     -      24*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(zz) - 
+     -      2*pi**2*xx**2*yy*zz*log(zz) - 
+     -      4*cf*Nc*pi**2*xx**2*yy*zz*log(zz) - 
+     -      12*xx*yy**2*zz*log(zz) + 
+     -      6*logmh2omu2**2*xx*yy**2*zz*log(zz) - 
+     -      12*cf*Nc*xx*yy**2*zz*log(zz) + 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(zz) - 
+     -      pi**2*xx*yy**2*zz*log(zz) - 
+     -      2*cf*Nc*pi**2*xx*yy**2*zz*log(zz) + 
+     -      6*logmh2omu2**2*xx**2*zz**2*log(zz) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*zz**2*log(zz) - 
+     -      pi**2*xx**2*zz**2*log(zz) - 
+     -      2*cf*Nc*pi**2*xx**2*zz**2*log(zz) + 
+     -      6*logmh2omu2**2*xx*yy*zz**2*log(zz) - 
+     -      24*cf*Nc*xx*yy*zz**2*log(zz) + 
+     -      12*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(zz) - 
+     -      pi**2*xx*yy*zz**2*log(zz) - 
+     -      2*cf*Nc*pi**2*xx*yy*zz**2*log(zz) + 
+     -      12*xx**3*yy*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      12*xx**2*yy**2*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      12*xx**3*zz*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      24*xx**2*yy*zz*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      12*xx*yy**2*zz*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      12*xx**2*zz**2*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      12*xx*yy*zz**2*Li2((-1 + xx + zz)/xx)*log(zz) - 
+     -      12*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      24*cf*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      12*xx**2*yy**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      24*cf*Nc*xx**2*yy**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      12*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      24*cf*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      24*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      48*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      12*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      24*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      12*xx**2*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      24*cf*Nc*xx**2*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      12*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      24*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      12*logmh2omu2*xx**3*yy*log(-((-1 + zz)/xx))*log(zz) + 
+     -      12*logmh2omu2*xx**2*yy**2*log(-((-1 + zz)/xx))*log(zz) + 
+     -      12*logmh2omu2*xx**3*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      24*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      12*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      12*logmh2omu2*xx**2*zz**2*log(-((-1 + zz)/xx))*log(zz) + 
+     -      12*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/xx))*log(zz) - 
+     -      12*logmh2omu2*xx**3*yy*log(-((-1 + zz)/yy))*log(zz) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*log(-((-1 + zz)/yy))*log(zz) - 
+     -      12*logmh2omu2*xx**2*yy**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy**2*log(-((-1 + zz)/yy))*
+     -       log(zz) - 12*logmh2omu2*xx**3*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 24*cf*logmh2omu2*Nc*xx**3*zz*
+     -       log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      24*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      48*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 12*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      12*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 12*logmh2omu2*xx**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) - 24*cf*logmh2omu2*Nc*xx**2*zz**2*
+     -       log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      12*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) + 12*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      6*logmh2omu2*xx**3*yy*log(zz)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx**3*yy*log(zz)**2 + 
+     -      6*logmh2omu2*xx**2*yy**2*log(zz)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx**2*yy**2*log(zz)**2 + 
+     -      6*logmh2omu2*xx**3*zz*log(zz)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx**3*zz*log(zz)**2 + 
+     -      12*logmh2omu2*xx**2*yy*zz*log(zz)**2 + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*log(zz)**2 + 
+     -      6*logmh2omu2*xx*yy**2*zz*log(zz)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx*yy**2*zz*log(zz)**2 + 
+     -      6*logmh2omu2*xx**2*zz**2*log(zz)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx**2*zz**2*log(zz)**2 + 
+     -      6*logmh2omu2*xx*yy*zz**2*log(zz)**2 + 
+     -      12*cf*logmh2omu2*Nc*xx*yy*zz**2*log(zz)**2 + 
+     -      6*xx**3*yy*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      6*xx**2*yy**2*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      6*xx**3*zz*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      12*xx**2*yy*zz*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      6*xx*yy**2*zz*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      6*xx**2*zz**2*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      6*xx*yy*zz**2*log(-((-1 + zz)/xx))*log(zz)**2 - 
+     -      6*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      12*cf*Nc*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      6*xx**2*yy**2*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      12*cf*Nc*xx**2*yy**2*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      6*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      12*cf*Nc*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      12*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      24*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      6*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      12*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      6*xx**2*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      12*cf*Nc*xx**2*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      6*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      12*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      2*xx**3*yy*log(zz)**3 + 4*cf*Nc*xx**3*yy*log(zz)**3 + 
+     -      2*xx**2*yy**2*log(zz)**3 + 4*cf*Nc*xx**2*yy**2*log(zz)**3 + 
+     -      2*xx**3*zz*log(zz)**3 + 4*cf*Nc*xx**3*zz*log(zz)**3 + 
+     -      4*xx**2*yy*zz*log(zz)**3 + 8*cf*Nc*xx**2*yy*zz*log(zz)**3 + 
+     -      2*xx*yy**2*zz*log(zz)**3 + 4*cf*Nc*xx*yy**2*zz*log(zz)**3 + 
+     -      2*xx**2*zz**2*log(zz)**3 + 4*cf*Nc*xx**2*zz**2*log(zz)**3 + 
+     -      2*xx*yy*zz**2*log(zz)**3 + 4*cf*Nc*xx*yy*zz**2*log(zz)**3))/
+     -  (6.*Nc*rt2*xx*yy*(xx + yy)*zz*(xx + zz)) 
+
+!==== eps^( 2)
+      a1mipart(5) = (pi*(5760*xx**3*yy - 2880*logmh2omu2*xx**3*yy + 
+     -      720*logmh2omu2**2*xx**3*yy - 60*logmh2omu2**4*xx**3*yy - 
+     -      5760*cf*Nc*xx**3*yy + 2880*cf*logmh2omu2*Nc*xx**3*yy - 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*yy - 
+     -      240*cf*logmh2omu2**4*Nc*xx**3*yy - 120*pi**2*xx**3*yy + 
+     -      60*logmh2omu2**2*pi**2*xx**3*yy + 
+     -      120*cf*Nc*pi**2*xx**3*yy + 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx**3*yy + 
+     -      47*pi**4*xx**3*yy + 188*cf*Nc*pi**4*xx**3*yy + 
+     -      5760*xx**2*yy**2 - 2880*logmh2omu2*xx**2*yy**2 + 
+     -      720*logmh2omu2**2*xx**2*yy**2 - 
+     -      60*logmh2omu2**4*xx**2*yy**2 - 5760*cf*Nc*xx**2*yy**2 + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**2*yy**2 - 
+     -      240*cf*logmh2omu2**4*Nc*xx**2*yy**2 - 
+     -      120*pi**2*xx**2*yy**2 + 
+     -      60*logmh2omu2**2*pi**2*xx**2*yy**2 + 
+     -      120*cf*Nc*pi**2*xx**2*yy**2 + 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx**2*yy**2 + 
+     -      47*pi**4*xx**2*yy**2 + 188*cf*Nc*pi**4*xx**2*yy**2 - 
+     -      3360*logmh2omu2*xx**3*yy*zeta3 - 
+     -      13440*cf*logmh2omu2*Nc*xx**3*yy*zeta3 - 
+     -      3360*logmh2omu2*xx**2*yy**2*zeta3 - 
+     -      13440*cf*logmh2omu2*Nc*xx**2*yy**2*zeta3 + 5760*xx**3*zz - 
+     -      2880*logmh2omu2*xx**3*zz + 720*logmh2omu2**2*xx**3*zz - 
+     -      60*logmh2omu2**4*xx**3*zz - 5760*cf*Nc*xx**3*zz + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz - 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*zz - 
+     -      240*cf*logmh2omu2**4*Nc*xx**3*zz - 120*pi**2*xx**3*zz + 
+     -      60*logmh2omu2**2*pi**2*xx**3*zz + 
+     -      120*cf*Nc*pi**2*xx**3*zz + 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx**3*zz + 
+     -      47*pi**4*xx**3*zz + 188*cf*Nc*pi**4*xx**3*zz + 
+     -      11520*xx**2*yy*zz - 5760*logmh2omu2*xx**2*yy*zz + 
+     -      1440*logmh2omu2**2*xx**2*yy*zz - 
+     -      120*logmh2omu2**4*xx**2*yy*zz - 11520*cf*Nc*xx**2*yy*zz + 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz - 
+     -      480*cf*logmh2omu2**4*Nc*xx**2*yy*zz - 
+     -      240*pi**2*xx**2*yy*zz + 
+     -      120*logmh2omu2**2*pi**2*xx**2*yy*zz + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz + 
+     -      480*cf*logmh2omu2**2*Nc*pi**2*xx**2*yy*zz + 
+     -      94*pi**4*xx**2*yy*zz + 376*cf*Nc*pi**4*xx**2*yy*zz + 
+     -      5760*xx*yy**2*zz - 2880*logmh2omu2*xx*yy**2*zz + 
+     -      720*logmh2omu2**2*xx*yy**2*zz - 
+     -      60*logmh2omu2**4*xx*yy**2*zz - 5760*cf*Nc*xx*yy**2*zz + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz - 
+     -      720*cf*logmh2omu2**2*Nc*xx*yy**2*zz - 
+     -      240*cf*logmh2omu2**4*Nc*xx*yy**2*zz - 
+     -      120*pi**2*xx*yy**2*zz + 
+     -      60*logmh2omu2**2*pi**2*xx*yy**2*zz + 
+     -      120*cf*Nc*pi**2*xx*yy**2*zz + 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx*yy**2*zz + 
+     -      47*pi**4*xx*yy**2*zz + 188*cf*Nc*pi**4*xx*yy**2*zz - 
+     -      3360*logmh2omu2*xx**3*zeta3*zz - 
+     -      13440*cf*logmh2omu2*Nc*xx**3*zeta3*zz - 
+     -      6720*logmh2omu2*xx**2*yy*zeta3*zz - 
+     -      26880*cf*logmh2omu2*Nc*xx**2*yy*zeta3*zz - 
+     -      3360*logmh2omu2*xx*yy**2*zeta3*zz - 
+     -      13440*cf*logmh2omu2*Nc*xx*yy**2*zeta3*zz + 
+     -      5760*xx**2*zz**2 - 2880*logmh2omu2*xx**2*zz**2 + 
+     -      720*logmh2omu2**2*xx**2*zz**2 - 
+     -      60*logmh2omu2**4*xx**2*zz**2 - 5760*cf*Nc*xx**2*zz**2 + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*zz**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**2*zz**2 - 
+     -      240*cf*logmh2omu2**4*Nc*xx**2*zz**2 - 
+     -      120*pi**2*xx**2*zz**2 + 
+     -      60*logmh2omu2**2*pi**2*xx**2*zz**2 + 
+     -      120*cf*Nc*pi**2*xx**2*zz**2 + 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx**2*zz**2 + 
+     -      47*pi**4*xx**2*zz**2 + 188*cf*Nc*pi**4*xx**2*zz**2 + 
+     -      5760*xx*yy*zz**2 - 2880*logmh2omu2*xx*yy*zz**2 + 
+     -      720*logmh2omu2**2*xx*yy*zz**2 - 
+     -      60*logmh2omu2**4*xx*yy*zz**2 - 5760*cf*Nc*xx*yy*zz**2 + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx*yy*zz**2 - 
+     -      240*cf*logmh2omu2**4*Nc*xx*yy*zz**2 - 
+     -      120*pi**2*xx*yy*zz**2 + 
+     -      60*logmh2omu2**2*pi**2*xx*yy*zz**2 + 
+     -      120*cf*Nc*pi**2*xx*yy*zz**2 + 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx*yy*zz**2 + 
+     -      47*pi**4*xx*yy*zz**2 + 188*cf*Nc*pi**4*xx*yy*zz**2 - 
+     -      3360*logmh2omu2*xx**2*zeta3*zz**2 - 
+     -      13440*cf*logmh2omu2*Nc*xx**2*zeta3*zz**2 - 
+     -      3360*logmh2omu2*xx*yy*zeta3*zz**2 - 
+     -      13440*cf*logmh2omu2*Nc*xx*yy*zeta3*zz**2 - 
+     -      2880*xx**3*yy*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      120*pi**2*xx**3*yy*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      2880*xx**2*yy**2*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      720*logmh2omu2**2*xx**2*yy**2*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      120*pi**2*xx**2*yy**2*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      120*pi**2*xx**3*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      2880*xx**2*yy*zz*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*
+     -       Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      240*pi**2*xx**2*yy*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      2880*xx*yy**2*zz*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      720*logmh2omu2**2*xx*yy**2*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      120*pi**2*xx*yy**2*zz*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      720*logmh2omu2**2*xx**2*zz**2*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      120*pi**2*xx**2*zz**2*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      720*logmh2omu2**2*xx*yy*zz**2*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      120*pi**2*xx*yy*zz**2*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + xx + zz)/xx) + 
+     -      120*pi**2*xx**3*yy*Li2((-1 + xx + zz)/xx) - 
+     -      720*logmh2omu2**2*xx**2*yy**2*Li2((-1 + xx + zz)/xx) + 
+     -      120*pi**2*xx**2*yy**2*Li2((-1 + xx + zz)/xx) + 
+     -      2880*xx**3*zz*Li2((-1 + xx + zz)/xx) - 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + xx + zz)/xx) + 
+     -      120*pi**2*xx**3*zz*Li2((-1 + xx + zz)/xx) + 
+     -      2880*xx**2*yy*zz*Li2((-1 + xx + zz)/xx) - 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + xx + zz)/xx) + 
+     -      240*pi**2*xx**2*yy*zz*Li2((-1 + xx + zz)/xx) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*Li2((-1 + xx + zz)/xx) + 
+     -      120*pi**2*xx*yy**2*zz*Li2((-1 + xx + zz)/xx) + 
+     -      2880*xx**2*zz**2*Li2((-1 + xx + zz)/xx) - 
+     -      720*logmh2omu2**2*xx**2*zz**2*Li2((-1 + xx + zz)/xx) + 
+     -      120*pi**2*xx**2*zz**2*Li2((-1 + xx + zz)/xx) + 
+     -      2880*xx*yy*zz**2*Li2((-1 + xx + zz)/xx) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*Li2((-1 + xx + zz)/xx) + 
+     -      120*pi**2*xx*yy*zz**2*Li2((-1 + xx + zz)/xx) - 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + xx + zz)/zz) + 
+     -      120*pi**2*xx**3*yy*Li2((-1 + xx + zz)/zz) - 
+     -      720*logmh2omu2**2*xx**2*yy**2*Li2((-1 + xx + zz)/zz) + 
+     -      120*pi**2*xx**2*yy**2*Li2((-1 + xx + zz)/zz) + 
+     -      2880*xx**3*zz*Li2((-1 + xx + zz)/zz) - 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + xx + zz)/zz) + 
+     -      120*pi**2*xx**3*zz*Li2((-1 + xx + zz)/zz) + 
+     -      2880*xx**2*yy*zz*Li2((-1 + xx + zz)/zz) - 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + xx + zz)/zz) + 
+     -      240*pi**2*xx**2*yy*zz*Li2((-1 + xx + zz)/zz) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*Li2((-1 + xx + zz)/zz) + 
+     -      120*pi**2*xx*yy**2*zz*Li2((-1 + xx + zz)/zz) + 
+     -      2880*xx**2*zz**2*Li2((-1 + xx + zz)/zz) - 
+     -      720*logmh2omu2**2*xx**2*zz**2*Li2((-1 + xx + zz)/zz) + 
+     -      120*pi**2*xx**2*zz**2*Li2((-1 + xx + zz)/zz) + 
+     -      2880*xx*yy*zz**2*Li2((-1 + xx + zz)/zz) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*Li2((-1 + xx + zz)/zz) + 
+     -      120*pi**2*xx*yy*zz**2*Li2((-1 + xx + zz)/zz) + 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      120*pi**2*xx**3*yy*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      720*logmh2omu2**2*xx**2*yy**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      120*pi**2*xx**2*yy**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      2880*xx**3*zz*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      120*pi**2*xx**3*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      2880*xx**2*yy*zz*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*
+     -       Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      240*pi**2*xx**2*yy*zz*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      720*logmh2omu2**2*xx*yy**2*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      120*pi**2*xx*yy**2*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      2880*xx**2*zz**2*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      720*logmh2omu2**2*xx**2*zz**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      120*pi**2*xx**2*zz**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      2880*xx*yy*zz**2*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      720*logmh2omu2**2*xx*yy*zz**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      120*pi**2*xx*yy*zz**2*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + yy + zz)/yy) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy) - 
+     -      120*pi**2*xx**3*yy*Li2((-1 + yy + zz)/yy) - 
+     -      240*cf*Nc*pi**2*xx**3*yy*Li2((-1 + yy + zz)/yy) + 
+     -      720*logmh2omu2**2*xx**2*yy**2*Li2((-1 + yy + zz)/yy) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy**2*
+     -       Li2((-1 + yy + zz)/yy) - 
+     -      120*pi**2*xx**2*yy**2*Li2((-1 + yy + zz)/yy) - 
+     -      240*cf*Nc*pi**2*xx**2*yy**2*Li2((-1 + yy + zz)/yy) + 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + yy + zz)/yy) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy) - 
+     -      120*pi**2*xx**3*zz*Li2((-1 + yy + zz)/yy) - 
+     -      240*cf*Nc*pi**2*xx**3*zz*Li2((-1 + yy + zz)/yy) + 
+     -      2880*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      5760*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      2880*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/yy) - 
+     -      240*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      480*cf*Nc*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      2880*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      720*logmh2omu2**2*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      5760*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*
+     -       Li2((-1 + yy + zz)/yy) - 
+     -      120*pi**2*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) - 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      720*logmh2omu2**2*xx**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*zz**2*
+     -       Li2((-1 + yy + zz)/yy) - 
+     -      120*pi**2*xx**2*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      240*cf*Nc*pi**2*xx**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      2880*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      720*logmh2omu2**2*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      5760*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*
+     -       Li2((-1 + yy + zz)/yy) - 
+     -      120*pi**2*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      2880*yy**2*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*yy**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      5760*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + yy + zz)/zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz) - 
+     -      120*pi**2*xx**3*yy*Li2((-1 + yy + zz)/zz) - 
+     -      240*cf*Nc*pi**2*xx**3*yy*Li2((-1 + yy + zz)/zz) + 
+     -      720*logmh2omu2**2*xx**2*yy**2*Li2((-1 + yy + zz)/zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy**2*
+     -       Li2((-1 + yy + zz)/zz) - 
+     -      120*pi**2*xx**2*yy**2*Li2((-1 + yy + zz)/zz) - 
+     -      240*cf*Nc*pi**2*xx**2*yy**2*Li2((-1 + yy + zz)/zz) + 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + yy + zz)/zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz) - 
+     -      120*pi**2*xx**3*zz*Li2((-1 + yy + zz)/zz) - 
+     -      240*cf*Nc*pi**2*xx**3*zz*Li2((-1 + yy + zz)/zz) + 
+     -      2880*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      5760*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      2880*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/zz) - 
+     -      240*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      480*cf*Nc*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      2880*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      720*logmh2omu2**2*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      5760*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*
+     -       Li2((-1 + yy + zz)/zz) - 
+     -      120*pi**2*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) - 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      720*logmh2omu2**2*xx**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*zz**2*
+     -       Li2((-1 + yy + zz)/zz) - 
+     -      120*pi**2*xx**2*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      240*cf*Nc*pi**2*xx**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      2880*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      720*logmh2omu2**2*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      5760*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*
+     -       Li2((-1 + yy + zz)/zz) - 
+     -      120*pi**2*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      2880*yy**2*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*yy**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      5760*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      120*pi**2*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      240*cf*Nc*pi**2*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      720*logmh2omu2**2*xx**2*yy**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      120*pi**2*xx**2*yy**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      240*cf*Nc*pi**2*xx**2*yy**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      120*pi**2*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      240*cf*Nc*pi**2*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      5760*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      240*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      480*cf*Nc*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      5760*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      120*pi**2*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      720*logmh2omu2**2*xx**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*zz**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      120*pi**2*xx**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      240*cf*Nc*pi**2*xx**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      5760*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      120*pi**2*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      5760*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + yy)/xx) + 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + xx + yy)/xx) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + yy)/xx) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + yy)/xx) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + xx + yy)/xx) + 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + xx + yy)/xx) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + xx + yy)/xx) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + yy)/yy) + 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + xx + yy)/yy) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + yy)/yy) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + yy)/yy) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + xx + yy)/yy) + 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + xx + yy)/yy) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + xx + yy)/yy) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + zz)/xx) + 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + xx + zz)/xx) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + zz)/xx) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + zz)/xx) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + xx + zz)/xx) + 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + xx + zz)/xx) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + xx + zz)/xx) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + zz)/zz) + 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + xx + zz)/zz) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + zz)/zz) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + zz)/zz) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + xx + zz)/zz) + 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + xx + zz)/zz) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + xx + zz)/zz) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**3*yy*Li3((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy**2*Li3((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz*Li3((-1 + yy + zz)/yy) + 
+     -      1440*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) - 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) - 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) + 
+     -      1440*xx*yy**2*zz*Li3((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      1440*xx*yy*zz**2*Li3((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      1440*yy**2*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*yy**2*zz**2*Li3((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx**3*yy*Li3((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy**2*Li3((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz*Li3((-1 + yy + zz)/zz) + 
+     -      1440*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) - 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) - 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      1440*xx*yy**2*zz*Li3((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      1440*xx*yy*zz**2*Li3((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      1440*yy**2*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*yy**2*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*yy*
+     -       Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx**2*yy**2*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy**2*
+     -       Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz*
+     -       Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx*yy**2*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx**2*zz**2*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*zz**2*
+     -       Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx*yy*zz**2*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*yy**2*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*yy**2*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx**3*yy*Li4((-1 + xx + yy)/xx) - 
+     -      1440*xx**2*yy**2*Li4((-1 + xx + yy)/xx) - 
+     -      1440*xx**3*zz*Li4((-1 + xx + yy)/xx) - 
+     -      2880*xx**2*yy*zz*Li4((-1 + xx + yy)/xx) - 
+     -      1440*xx*yy**2*zz*Li4((-1 + xx + yy)/xx) - 
+     -      1440*xx**2*zz**2*Li4((-1 + xx + yy)/xx) - 
+     -      1440*xx*yy*zz**2*Li4((-1 + xx + yy)/xx) - 
+     -      1440*xx**3*yy*Li4((-1 + xx + yy)/yy) - 
+     -      1440*xx**2*yy**2*Li4((-1 + xx + yy)/yy) - 
+     -      1440*xx**3*zz*Li4((-1 + xx + yy)/yy) - 
+     -      2880*xx**2*yy*zz*Li4((-1 + xx + yy)/yy) - 
+     -      1440*xx*yy**2*zz*Li4((-1 + xx + yy)/yy) - 
+     -      1440*xx**2*zz**2*Li4((-1 + xx + yy)/yy) - 
+     -      1440*xx*yy*zz**2*Li4((-1 + xx + yy)/yy) + 
+     -      1440*xx**3*yy*Li4((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*xx**2*yy**2*Li4((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*xx**3*zz*Li4((-1 + xx + yy)/(xx*yy)) + 
+     -      2880*xx**2*yy*zz*Li4((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*xx*yy**2*zz*Li4((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*xx**2*zz**2*Li4((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*xx*yy*zz**2*Li4((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*xx**3*yy*Li4((-1 + xx + zz)/xx) - 
+     -      1440*xx**2*yy**2*Li4((-1 + xx + zz)/xx) - 
+     -      1440*xx**3*zz*Li4((-1 + xx + zz)/xx) - 
+     -      2880*xx**2*yy*zz*Li4((-1 + xx + zz)/xx) - 
+     -      1440*xx*yy**2*zz*Li4((-1 + xx + zz)/xx) - 
+     -      1440*xx**2*zz**2*Li4((-1 + xx + zz)/xx) - 
+     -      1440*xx*yy*zz**2*Li4((-1 + xx + zz)/xx) - 
+     -      1440*xx**3*yy*Li4((-1 + xx + zz)/zz) - 
+     -      1440*xx**2*yy**2*Li4((-1 + xx + zz)/zz) - 
+     -      1440*xx**3*zz*Li4((-1 + xx + zz)/zz) - 
+     -      2880*xx**2*yy*zz*Li4((-1 + xx + zz)/zz) - 
+     -      1440*xx*yy**2*zz*Li4((-1 + xx + zz)/zz) - 
+     -      1440*xx**2*zz**2*Li4((-1 + xx + zz)/zz) - 
+     -      1440*xx*yy*zz**2*Li4((-1 + xx + zz)/zz) + 
+     -      1440*xx**3*yy*Li4((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*xx**2*yy**2*Li4((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*xx**3*zz*Li4((-1 + xx + zz)/(xx*zz)) + 
+     -      2880*xx**2*yy*zz*Li4((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*xx*yy**2*zz*Li4((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*xx**2*zz**2*Li4((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*xx*yy*zz**2*Li4((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*xx**3*yy*Li4((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx**3*yy*Li4((-1 + yy + zz)/yy) + 
+     -      1440*xx**2*yy**2*Li4((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx**2*yy**2*Li4((-1 + yy + zz)/yy) + 
+     -      1440*xx**3*zz*Li4((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx**3*zz*Li4((-1 + yy + zz)/yy) + 
+     -      2880*xx**2*yy*zz*Li4((-1 + yy + zz)/yy) + 
+     -      5760*cf*Nc*xx**2*yy*zz*Li4((-1 + yy + zz)/yy) + 
+     -      1440*xx*yy**2*zz*Li4((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx*yy**2*zz*Li4((-1 + yy + zz)/yy) + 
+     -      1440*xx**2*zz**2*Li4((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx**2*zz**2*Li4((-1 + yy + zz)/yy) + 
+     -      1440*xx*yy*zz**2*Li4((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx*yy*zz**2*Li4((-1 + yy + zz)/yy) + 
+     -      1440*xx**3*yy*Li4((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx**3*yy*Li4((-1 + yy + zz)/zz) + 
+     -      1440*xx**2*yy**2*Li4((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx**2*yy**2*Li4((-1 + yy + zz)/zz) + 
+     -      1440*xx**3*zz*Li4((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx**3*zz*Li4((-1 + yy + zz)/zz) + 
+     -      2880*xx**2*yy*zz*Li4((-1 + yy + zz)/zz) + 
+     -      5760*cf*Nc*xx**2*yy*zz*Li4((-1 + yy + zz)/zz) + 
+     -      1440*xx*yy**2*zz*Li4((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx*yy**2*zz*Li4((-1 + yy + zz)/zz) + 
+     -      1440*xx**2*zz**2*Li4((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx**2*zz**2*Li4((-1 + yy + zz)/zz) + 
+     -      1440*xx*yy*zz**2*Li4((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx*yy*zz**2*Li4((-1 + yy + zz)/zz) - 
+     -      1440*xx**3*yy*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx**3*yy*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx**2*yy**2*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx**2*yy**2*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx**3*zz*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx**3*zz*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*xx**2*yy*zz*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      5760*cf*Nc*xx**2*yy*zz*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx*yy**2*zz*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx*yy**2*zz*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx**2*zz**2*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx**2*zz**2*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx*yy*zz**2*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx*yy*zz**2*Li4((-1 + yy + zz)/(yy*zz)) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(xx) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(xx) + 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(xx) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(xx) + 
+     -      3360*xx**3*yy*zeta3*log(xx) + 
+     -      3360*xx**2*yy**2*zeta3*log(xx) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(xx) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(xx) + 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(xx) - 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(xx) + 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(xx) - 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(xx) + 
+     -      3360*xx**3*zeta3*zz*log(xx) + 
+     -      6720*xx**2*yy*zeta3*zz*log(xx) + 
+     -      3360*xx*yy**2*zeta3*zz*log(xx) + 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(xx) - 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(xx) + 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(xx) - 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(xx) + 
+     -      3360*xx**2*zeta3*zz**2*log(xx) + 
+     -      3360*xx*yy*zeta3*zz**2*log(xx) - 
+     -      1440*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/zz)*log(xx) - 
+     -      1440*logmh2omu2*xx**2*yy**2*Li2((-1 + xx + zz)/zz)*
+     -       log(xx) - 1440*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/zz)*
+     -       log(xx) - 2880*logmh2omu2*xx**2*yy*zz*
+     -       Li2((-1 + xx + zz)/zz)*log(xx) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + xx + zz)/zz)*
+     -       log(xx) - 1440*logmh2omu2*xx**2*zz**2*
+     -       Li2((-1 + xx + zz)/zz)*log(xx) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + xx + zz)/zz)*
+     -       log(xx) + 1440*xx**3*yy*Li3((-1 + xx + yy)/yy)*log(xx) + 
+     -      1440*xx**2*yy**2*Li3((-1 + xx + yy)/yy)*log(xx) + 
+     -      1440*xx**3*zz*Li3((-1 + xx + yy)/yy)*log(xx) + 
+     -      2880*xx**2*yy*zz*Li3((-1 + xx + yy)/yy)*log(xx) + 
+     -      1440*xx*yy**2*zz*Li3((-1 + xx + yy)/yy)*log(xx) + 
+     -      1440*xx**2*zz**2*Li3((-1 + xx + yy)/yy)*log(xx) + 
+     -      1440*xx*yy*zz**2*Li3((-1 + xx + yy)/yy)*log(xx) + 
+     -      1440*xx**3*yy*Li3((-1 + xx + zz)/zz)*log(xx) + 
+     -      1440*xx**2*yy**2*Li3((-1 + xx + zz)/zz)*log(xx) + 
+     -      1440*xx**3*zz*Li3((-1 + xx + zz)/zz)*log(xx) + 
+     -      2880*xx**2*yy*zz*Li3((-1 + xx + zz)/zz)*log(xx) + 
+     -      1440*xx*yy**2*zz*Li3((-1 + xx + zz)/zz)*log(xx) + 
+     -      1440*xx**2*zz**2*Li3((-1 + xx + zz)/zz)*log(xx) + 
+     -      1440*xx*yy*zz**2*Li3((-1 + xx + zz)/zz)*log(xx) + 
+     -      360*logmh2omu2**2*xx**3*yy*log(xx)**2 - 
+     -      60*pi**2*xx**3*yy*log(xx)**2 + 
+     -      360*logmh2omu2**2*xx**2*yy**2*log(xx)**2 - 
+     -      60*pi**2*xx**2*yy**2*log(xx)**2 + 
+     -      360*logmh2omu2**2*xx**3*zz*log(xx)**2 - 
+     -      60*pi**2*xx**3*zz*log(xx)**2 + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(xx)**2 - 
+     -      120*pi**2*xx**2*yy*zz*log(xx)**2 + 
+     -      360*logmh2omu2**2*xx*yy**2*zz*log(xx)**2 - 
+     -      60*pi**2*xx*yy**2*zz*log(xx)**2 + 
+     -      360*logmh2omu2**2*xx**2*zz**2*log(xx)**2 - 
+     -      60*pi**2*xx**2*zz**2*log(xx)**2 + 
+     -      360*logmh2omu2**2*xx*yy*zz**2*log(xx)**2 - 
+     -      60*pi**2*xx*yy*zz**2*log(xx)**2 - 
+     -      720*xx**3*yy*Li2((-1 + xx + zz)/zz)*log(xx)**2 - 
+     -      720*xx**2*yy**2*Li2((-1 + xx + zz)/zz)*log(xx)**2 - 
+     -      720*xx**3*zz*Li2((-1 + xx + zz)/zz)*log(xx)**2 - 
+     -      1440*xx**2*yy*zz*Li2((-1 + xx + zz)/zz)*log(xx)**2 - 
+     -      720*xx*yy**2*zz*Li2((-1 + xx + zz)/zz)*log(xx)**2 - 
+     -      720*xx**2*zz**2*Li2((-1 + xx + zz)/zz)*log(xx)**2 - 
+     -      720*xx*yy*zz**2*Li2((-1 + xx + zz)/zz)*log(xx)**2 + 
+     -      240*logmh2omu2*xx**3*yy*log(xx)**3 + 
+     -      240*logmh2omu2*xx**2*yy**2*log(xx)**3 + 
+     -      240*logmh2omu2*xx**3*zz*log(xx)**3 + 
+     -      480*logmh2omu2*xx**2*yy*zz*log(xx)**3 + 
+     -      240*logmh2omu2*xx*yy**2*zz*log(xx)**3 + 
+     -      240*logmh2omu2*xx**2*zz**2*log(xx)**3 + 
+     -      240*logmh2omu2*xx*yy*zz**2*log(xx)**3 + 
+     -      60*xx**3*yy*log(xx)**4 + 60*xx**2*yy**2*log(xx)**4 + 
+     -      60*xx**3*zz*log(xx)**4 + 120*xx**2*yy*zz*log(xx)**4 + 
+     -      60*xx*yy**2*zz*log(xx)**4 + 60*xx**2*zz**2*log(xx)**4 + 
+     -      60*xx*yy*zz**2*log(xx)**4 + 
+     -      120*xx*(xx + yy)*(xx + zz)*Li2((-1 + xx + yy)/yy)*
+     -       (24*yy + pi**2*yy + pi**2*zz - 6*logmh2omu2**2*(yy + zz) - 
+     -         12*logmh2omu2*(yy + zz)*log(xx) - 6*(yy + zz)*log(xx)**2)
+     -        - 5760*xx**3*yy*log(-((-1 + yy)/xx)) + 
+     -      2880*logmh2omu2*xx**3*yy*log(-((-1 + yy)/xx)) - 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + yy)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + yy)/xx)) - 
+     -      5760*xx**2*yy**2*log(-((-1 + yy)/xx)) + 
+     -      2880*logmh2omu2*xx**2*yy**2*log(-((-1 + yy)/xx)) - 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(-((-1 + yy)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(-((-1 + yy)/xx)) - 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + yy)/xx)) - 
+     -      3360*xx**2*yy**2*zeta3*log(-((-1 + yy)/xx)) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + yy)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + yy)/xx)) - 
+     -      5760*xx**2*yy*zz*log(-((-1 + yy)/xx)) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/xx)) - 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + yy)/xx)) + 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + yy)/xx)) - 
+     -      5760*xx*yy**2*zz*log(-((-1 + yy)/xx)) + 
+     -      2880*logmh2omu2*xx*yy**2*zz*log(-((-1 + yy)/xx)) - 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(-((-1 + yy)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(-((-1 + yy)/xx)) - 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + yy)/xx)) - 
+     -      6720*xx**2*yy*zeta3*zz*log(-((-1 + yy)/xx)) - 
+     -      3360*xx*yy**2*zeta3*zz*log(-((-1 + yy)/xx)) - 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(-((-1 + yy)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(-((-1 + yy)/xx)) - 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(-((-1 + yy)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(-((-1 + yy)/xx)) - 
+     -      3360*xx**2*zeta3*zz**2*log(-((-1 + yy)/xx)) - 
+     -      3360*xx*yy*zeta3*zz**2*log(-((-1 + yy)/xx)) - 
+     -      5760*xx**3*yy*log(-((-1 + xx)/yy)) + 
+     -      2880*logmh2omu2*xx**3*yy*log(-((-1 + xx)/yy)) - 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + xx)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + xx)/yy)) - 
+     -      5760*xx**2*yy**2*log(-((-1 + xx)/yy)) + 
+     -      2880*logmh2omu2*xx**2*yy**2*log(-((-1 + xx)/yy)) - 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(-((-1 + xx)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(-((-1 + xx)/yy)) - 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + xx)/yy)) - 
+     -      3360*xx**2*yy**2*zeta3*log(-((-1 + xx)/yy)) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + xx)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + xx)/yy)) - 
+     -      5760*xx**2*yy*zz*log(-((-1 + xx)/yy)) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*log(-((-1 + xx)/yy)) - 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + xx)/yy)) + 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + xx)/yy)) - 
+     -      5760*xx*yy**2*zz*log(-((-1 + xx)/yy)) + 
+     -      2880*logmh2omu2*xx*yy**2*zz*log(-((-1 + xx)/yy)) - 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(-((-1 + xx)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(-((-1 + xx)/yy)) - 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + xx)/yy)) - 
+     -      6720*xx**2*yy*zeta3*zz*log(-((-1 + xx)/yy)) - 
+     -      3360*xx*yy**2*zeta3*zz*log(-((-1 + xx)/yy)) - 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(-((-1 + xx)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(-((-1 + xx)/yy)) - 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(-((-1 + xx)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(-((-1 + xx)/yy)) - 
+     -      3360*xx**2*zeta3*zz**2*log(-((-1 + xx)/yy)) - 
+     -      3360*xx*yy*zeta3*zz**2*log(-((-1 + xx)/yy)) + 
+     -      2880*xx**3*yy*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2**2*xx**3*yy*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      120*pi**2*xx**3*yy*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      2880*xx**2*yy**2*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2**2*xx**2*yy**2*log(xx)*
+     -       log(-((-1 + xx)/yy)) + 
+     -      120*pi**2*xx**2*yy**2*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2**2*xx**3*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      120*pi**2*xx**3*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      2880*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*log(xx)*
+     -       log(-((-1 + xx)/yy)) + 
+     -      240*pi**2*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      2880*xx*yy**2*zz*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(xx)*
+     -       log(-((-1 + xx)/yy)) + 
+     -      120*pi**2*xx*yy**2*zz*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2**2*xx**2*zz**2*log(xx)*
+     -       log(-((-1 + xx)/yy)) + 
+     -      120*pi**2*xx**2*zz**2*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(xx)*
+     -       log(-((-1 + xx)/yy)) + 
+     -      120*pi**2*xx*yy*zz**2*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2*xx**3*yy*log(xx)**2*log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2*xx**2*yy**2*log(xx)**2*
+     -       log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2*xx**3*zz*log(xx)**2*log(-((-1 + xx)/yy)) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(xx)**2*
+     -       log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2*xx*yy**2*zz*log(xx)**2*
+     -       log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2*xx**2*zz**2*log(xx)**2*
+     -       log(-((-1 + xx)/yy)) - 
+     -      720*logmh2omu2*xx*yy*zz**2*log(xx)**2*
+     -       log(-((-1 + xx)/yy)) - 
+     -      240*xx**3*yy*log(xx)**3*log(-((-1 + xx)/yy)) - 
+     -      240*xx**2*yy**2*log(xx)**3*log(-((-1 + xx)/yy)) - 
+     -      240*xx**3*zz*log(xx)**3*log(-((-1 + xx)/yy)) - 
+     -      480*xx**2*yy*zz*log(xx)**3*log(-((-1 + xx)/yy)) - 
+     -      240*xx*yy**2*zz*log(xx)**3*log(-((-1 + xx)/yy)) - 
+     -      240*xx**2*zz**2*log(xx)**3*log(-((-1 + xx)/yy)) - 
+     -      240*xx*yy*zz**2*log(xx)**3*log(-((-1 + xx)/yy)) + 
+     -      5760*xx**3*yy*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      2880*logmh2omu2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      240*logmh2omu2**3*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      5760*xx**2*yy**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      2880*logmh2omu2*xx**2*yy**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      240*logmh2omu2**3*xx**2*yy**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      3360*xx**3*yy*zeta3*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      3360*xx**2*yy**2*zeta3*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      240*logmh2omu2**3*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      5760*xx**2*yy*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      2880*logmh2omu2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      480*logmh2omu2**3*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      5760*xx*yy**2*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      2880*logmh2omu2*xx*yy**2*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      240*logmh2omu2**3*xx*yy**2*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      3360*xx**3*zeta3*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      6720*xx**2*yy*zeta3*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      3360*xx*yy**2*zeta3*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      240*logmh2omu2**3*xx**2*zz**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      240*logmh2omu2**3*xx*yy*zz**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      3360*xx**2*zeta3*zz**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      3360*xx*yy*zeta3*zz**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      240*logmh2omu2**3*xx**3*yy*log(yy) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*log(yy) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(yy) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*log(yy) - 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(yy) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy**2*log(yy) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(yy) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy**2*log(yy) - 
+     -      3360*xx**3*yy*zeta3*log(yy) - 
+     -      6720*cf*Nc*xx**3*yy*zeta3*log(yy) - 
+     -      3360*xx**2*yy**2*zeta3*log(yy) - 
+     -      6720*cf*Nc*xx**2*yy**2*zeta3*log(yy) - 
+     -      2880*xx**3*zz*log(yy) + 1440*logmh2omu2*xx**3*zz*log(yy) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(yy) - 
+     -      2880*cf*Nc*xx**3*zz*log(yy) + 
+     -      1440*cf*logmh2omu2*Nc*xx**3*zz*log(yy) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*log(yy) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(yy) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*log(yy) - 
+     -      2880*xx**2*yy*zz*log(yy) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(yy) - 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(yy) - 
+     -      8640*cf*Nc*xx**2*yy*zz*log(yy) + 
+     -      4320*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy) - 
+     -      960*cf*logmh2omu2**3*Nc*xx**2*yy*zz*log(yy) + 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(yy) + 
+     -      480*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*log(yy) - 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(yy) - 
+     -      5760*cf*Nc*xx*yy**2*zz*log(yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*log(yy) - 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy**2*zz*log(yy) + 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(yy) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy**2*zz*log(yy) - 
+     -      3360*xx**3*zeta3*zz*log(yy) - 
+     -      6720*cf*Nc*xx**3*zeta3*zz*log(yy) - 
+     -      6720*xx**2*yy*zeta3*zz*log(yy) - 
+     -      13440*cf*Nc*xx**2*yy*zeta3*zz*log(yy) - 
+     -      3360*xx*yy**2*zeta3*zz*log(yy) - 
+     -      6720*cf*Nc*xx*yy**2*zeta3*zz*log(yy) - 
+     -      2880*xx**2*zz**2*log(yy) + 
+     -      1440*logmh2omu2*xx**2*zz**2*log(yy) - 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(yy) - 
+     -      2880*cf*Nc*xx**2*zz**2*log(yy) + 
+     -      1440*cf*logmh2omu2*Nc*xx**2*zz**2*log(yy) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*zz**2*log(yy) + 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(yy) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*zz**2*log(yy) - 
+     -      2880*xx*yy*zz**2*log(yy) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(yy) - 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(yy) - 
+     -      2880*cf*Nc*xx*yy*zz**2*log(yy) + 
+     -      1440*cf*logmh2omu2*Nc*xx*yy*zz**2*log(yy) - 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy*zz**2*log(yy) + 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(yy) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy*zz**2*log(yy) - 
+     -      3360*xx**2*zeta3*zz**2*log(yy) - 
+     -      6720*cf*Nc*xx**2*zeta3*zz**2*log(yy) - 
+     -      3360*xx*yy*zeta3*zz**2*log(yy) - 
+     -      6720*cf*Nc*xx*yy*zeta3*zz**2*log(yy) + 
+     -      1440*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) + 1440*logmh2omu2*xx**2*yy**2*
+     -       Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy**2*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) + 1440*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) + 2880*cf*logmh2omu2*Nc*xx**3*zz*
+     -       Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) + 5760*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 2880*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) + 2880*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      1440*logmh2omu2*xx**2*zz**2*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) + 2880*cf*logmh2omu2*Nc*xx**2*zz**2*
+     -       Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 2880*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) + 2880*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*yy**2*zz**2*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      1440*xx**3*yy*Li3((-1 + xx + yy)/xx)*log(yy) + 
+     -      1440*xx**2*yy**2*Li3((-1 + xx + yy)/xx)*log(yy) + 
+     -      1440*xx**3*zz*Li3((-1 + xx + yy)/xx)*log(yy) + 
+     -      2880*xx**2*yy*zz*Li3((-1 + xx + yy)/xx)*log(yy) + 
+     -      1440*xx*yy**2*zz*Li3((-1 + xx + yy)/xx)*log(yy) + 
+     -      1440*xx**2*zz**2*Li3((-1 + xx + yy)/xx)*log(yy) + 
+     -      1440*xx*yy*zz**2*Li3((-1 + xx + yy)/xx)*log(yy) - 
+     -      1440*xx**3*yy*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*xx**2*yy**2*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*Nc*xx**2*yy**2*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*xx**3*zz*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*xx**2*yy*zz*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      5760*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*xx*yy**2*zz*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*xx**2*zz**2*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*Nc*xx**2*zz**2*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*xx*yy*zz**2*Li3((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      2880*xx**3*yy*log(-((-1 + yy)/xx))*log(yy) - 
+     -      720*logmh2omu2**2*xx**3*yy*log(-((-1 + yy)/xx))*log(yy) + 
+     -      120*pi**2*xx**3*yy*log(-((-1 + yy)/xx))*log(yy) + 
+     -      2880*xx**2*yy**2*log(-((-1 + yy)/xx))*log(yy) - 
+     -      720*logmh2omu2**2*xx**2*yy**2*log(-((-1 + yy)/xx))*
+     -       log(yy) + 120*pi**2*xx**2*yy**2*log(-((-1 + yy)/xx))*
+     -       log(yy) - 720*logmh2omu2**2*xx**3*zz*log(-((-1 + yy)/xx))*
+     -       log(yy) + 120*pi**2*xx**3*zz*log(-((-1 + yy)/xx))*
+     -       log(yy) + 2880*xx**2*yy*zz*log(-((-1 + yy)/xx))*log(yy) - 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + yy)/xx))*
+     -       log(yy) + 240*pi**2*xx**2*yy*zz*log(-((-1 + yy)/xx))*
+     -       log(yy) + 2880*xx*yy**2*zz*log(-((-1 + yy)/xx))*log(yy) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + yy)/xx))*
+     -       log(yy) + 120*pi**2*xx*yy**2*zz*log(-((-1 + yy)/xx))*
+     -       log(yy) - 720*logmh2omu2**2*xx**2*zz**2*
+     -       log(-((-1 + yy)/xx))*log(yy) + 
+     -      120*pi**2*xx**2*zz**2*log(-((-1 + yy)/xx))*log(yy) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + yy)/xx))*
+     -       log(yy) + 120*pi**2*xx*yy*zz**2*log(-((-1 + yy)/xx))*
+     -       log(yy) - 360*logmh2omu2**2*xx**3*yy*log(yy)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*yy*log(yy)**2 + 
+     -      60*pi**2*xx**3*yy*log(yy)**2 + 
+     -      120*cf*Nc*pi**2*xx**3*yy*log(yy)**2 - 
+     -      360*logmh2omu2**2*xx**2*yy**2*log(yy)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**2*yy**2*log(yy)**2 + 
+     -      60*pi**2*xx**2*yy**2*log(yy)**2 + 
+     -      120*cf*Nc*pi**2*xx**2*yy**2*log(yy)**2 + 
+     -      720*xx**3*zz*log(yy)**2 - 
+     -      360*logmh2omu2**2*xx**3*zz*log(yy)**2 + 
+     -      720*cf*Nc*xx**3*zz*log(yy)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*zz*log(yy)**2 + 
+     -      60*pi**2*xx**3*zz*log(yy)**2 + 
+     -      120*cf*Nc*pi**2*xx**3*zz*log(yy)**2 + 
+     -      720*xx**2*yy*zz*log(yy)**2 - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(yy)**2 + 
+     -      2160*cf*Nc*xx**2*yy*zz*log(yy)**2 - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(yy)**2 + 
+     -      120*pi**2*xx**2*yy*zz*log(yy)**2 + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*log(yy)**2 - 
+     -      360*logmh2omu2**2*xx*yy**2*zz*log(yy)**2 + 
+     -      1440*cf*Nc*xx*yy**2*zz*log(yy)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(yy)**2 + 
+     -      60*pi**2*xx*yy**2*zz*log(yy)**2 + 
+     -      120*cf*Nc*pi**2*xx*yy**2*zz*log(yy)**2 + 
+     -      720*xx**2*zz**2*log(yy)**2 - 
+     -      360*logmh2omu2**2*xx**2*zz**2*log(yy)**2 + 
+     -      720*cf*Nc*xx**2*zz**2*log(yy)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**2*zz**2*log(yy)**2 + 
+     -      60*pi**2*xx**2*zz**2*log(yy)**2 + 
+     -      120*cf*Nc*pi**2*xx**2*zz**2*log(yy)**2 + 
+     -      720*xx*yy*zz**2*log(yy)**2 - 
+     -      360*logmh2omu2**2*xx*yy*zz**2*log(yy)**2 + 
+     -      720*cf*Nc*xx*yy*zz**2*log(yy)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(yy)**2 + 
+     -      60*pi**2*xx*yy*zz**2*log(yy)**2 + 
+     -      120*cf*Nc*pi**2*xx*yy*zz**2*log(yy)**2 + 
+     -      720*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      1440*cf*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      720*xx**2*yy**2*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      1440*cf*Nc*xx**2*yy**2*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      720*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      1440*cf*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      1440*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      720*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      1440*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      720*xx**2*zz**2*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      1440*cf*Nc*xx**2*zz**2*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      720*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      1440*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*log(yy)**2 - 
+     -      720*logmh2omu2*xx**3*yy*log(-((-1 + yy)/xx))*log(yy)**2 - 
+     -      720*logmh2omu2*xx**2*yy**2*log(-((-1 + yy)/xx))*
+     -       log(yy)**2 - 720*logmh2omu2*xx**3*zz*log(-((-1 + yy)/xx))*
+     -       log(yy)**2 - 1440*logmh2omu2*xx**2*yy*zz*
+     -       log(-((-1 + yy)/xx))*log(yy)**2 - 
+     -      720*logmh2omu2*xx*yy**2*zz*log(-((-1 + yy)/xx))*
+     -       log(yy)**2 - 720*logmh2omu2*xx**2*zz**2*
+     -       log(-((-1 + yy)/xx))*log(yy)**2 - 
+     -      720*logmh2omu2*xx*yy*zz**2*log(-((-1 + yy)/xx))*
+     -       log(yy)**2 - 240*logmh2omu2*xx**3*yy*log(yy)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx**3*yy*log(yy)**3 - 
+     -      240*logmh2omu2*xx**2*yy**2*log(yy)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx**2*yy**2*log(yy)**3 - 
+     -      240*logmh2omu2*xx**3*zz*log(yy)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx**3*zz*log(yy)**3 - 
+     -      480*logmh2omu2*xx**2*yy*zz*log(yy)**3 - 
+     -      960*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)**3 - 
+     -      240*logmh2omu2*xx*yy**2*zz*log(yy)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx*yy**2*zz*log(yy)**3 - 
+     -      240*logmh2omu2*xx**2*zz**2*log(yy)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx**2*zz**2*log(yy)**3 - 
+     -      240*logmh2omu2*xx*yy*zz**2*log(yy)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx*yy*zz**2*log(yy)**3 - 
+     -      240*xx**3*yy*log(-((-1 + yy)/xx))*log(yy)**3 - 
+     -      240*xx**2*yy**2*log(-((-1 + yy)/xx))*log(yy)**3 - 
+     -      240*xx**3*zz*log(-((-1 + yy)/xx))*log(yy)**3 - 
+     -      480*xx**2*yy*zz*log(-((-1 + yy)/xx))*log(yy)**3 - 
+     -      240*xx*yy**2*zz*log(-((-1 + yy)/xx))*log(yy)**3 - 
+     -      240*xx**2*zz**2*log(-((-1 + yy)/xx))*log(yy)**3 - 
+     -      240*xx*yy*zz**2*log(-((-1 + yy)/xx))*log(yy)**3 - 
+     -      60*xx**3*yy*log(yy)**4 - 120*cf*Nc*xx**3*yy*log(yy)**4 - 
+     -      60*xx**2*yy**2*log(yy)**4 - 
+     -      120*cf*Nc*xx**2*yy**2*log(yy)**4 - 60*xx**3*zz*log(yy)**4 - 
+     -      120*cf*Nc*xx**3*zz*log(yy)**4 - 
+     -      120*xx**2*yy*zz*log(yy)**4 - 
+     -      240*cf*Nc*xx**2*yy*zz*log(yy)**4 - 
+     -      60*xx*yy**2*zz*log(yy)**4 - 
+     -      120*cf*Nc*xx*yy**2*zz*log(yy)**4 - 
+     -      60*xx**2*zz**2*log(yy)**4 - 
+     -      120*cf*Nc*xx**2*zz**2*log(yy)**4 - 
+     -      60*xx*yy*zz**2*log(yy)**4 - 
+     -      120*cf*Nc*xx*yy*zz**2*log(yy)**4 + 
+     -      120*xx*(xx + yy)*(xx + zz)*Li2((-1 + xx + yy)/xx)*
+     -       (24*yy + pi**2*yy + pi**2*zz - 6*logmh2omu2**2*(yy + zz) - 
+     -         12*logmh2omu2*(yy + zz)*log(yy) - 6*(yy + zz)*log(yy)**2)
+     -        - 240*logmh2omu2**3*xx**3*yy*log(-((-1 + zz)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + zz)/xx)) - 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(-((-1 + zz)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(-((-1 + zz)/xx)) - 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + zz)/xx)) - 
+     -      3360*xx**2*yy**2*zeta3*log(-((-1 + zz)/xx)) - 
+     -      5760*xx**3*zz*log(-((-1 + zz)/xx)) + 
+     -      2880*logmh2omu2*xx**3*zz*log(-((-1 + zz)/xx)) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + zz)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + zz)/xx)) - 
+     -      5760*xx**2*yy*zz*log(-((-1 + zz)/xx)) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/xx)) - 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + zz)/xx)) + 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + zz)/xx)) - 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(-((-1 + zz)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(-((-1 + zz)/xx)) - 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + zz)/xx)) - 
+     -      6720*xx**2*yy*zeta3*zz*log(-((-1 + zz)/xx)) - 
+     -      3360*xx*yy**2*zeta3*zz*log(-((-1 + zz)/xx)) - 
+     -      5760*xx**2*zz**2*log(-((-1 + zz)/xx)) + 
+     -      2880*logmh2omu2*xx**2*zz**2*log(-((-1 + zz)/xx)) - 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(-((-1 + zz)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(-((-1 + zz)/xx)) - 
+     -      5760*xx*yy*zz**2*log(-((-1 + zz)/xx)) + 
+     -      2880*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/xx)) - 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(-((-1 + zz)/xx)) + 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(-((-1 + zz)/xx)) - 
+     -      3360*xx**2*zeta3*zz**2*log(-((-1 + zz)/xx)) - 
+     -      3360*xx*yy*zeta3*zz**2*log(-((-1 + zz)/xx)) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + zz)/yy)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*log(-((-1 + zz)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + zz)/yy)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*log(-((-1 + zz)/yy)) + 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(-((-1 + zz)/yy)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy**2*log(-((-1 + zz)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(-((-1 + zz)/yy)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy**2*
+     -       log(-((-1 + zz)/yy)) + 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + zz)/yy)) + 
+     -      6720*cf*Nc*xx**3*yy*zeta3*log(-((-1 + zz)/yy)) + 
+     -      3360*xx**2*yy**2*zeta3*log(-((-1 + zz)/yy)) + 
+     -      6720*cf*Nc*xx**2*yy**2*zeta3*log(-((-1 + zz)/yy)) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + zz)/yy)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      5760*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      11520*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      960*cf*logmh2omu2**3*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      120*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      480*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*
+     -       log(-((-1 + zz)/yy)) - 
+     -      5760*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      2880*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      11520*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      5760*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      120*pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy**2*zz*
+     -       log(-((-1 + zz)/yy)) + 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + zz)/yy)) + 
+     -      6720*cf*Nc*xx**3*zeta3*zz*log(-((-1 + zz)/yy)) + 
+     -      6720*xx**2*yy*zeta3*zz*log(-((-1 + zz)/yy)) + 
+     -      13440*cf*Nc*xx**2*yy*zeta3*zz*log(-((-1 + zz)/yy)) + 
+     -      3360*xx*yy**2*zeta3*zz*log(-((-1 + zz)/yy)) + 
+     -      6720*cf*Nc*xx*yy**2*zeta3*zz*log(-((-1 + zz)/yy)) + 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*zz**2*
+     -       log(-((-1 + zz)/yy)) - 
+     -      5760*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      2880*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      11520*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      5760*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      120*pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy*zz**2*
+     -       log(-((-1 + zz)/yy)) - 
+     -      5760*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      2880*logmh2omu2*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      720*logmh2omu2**2*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      11520*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      5760*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      1440*cf*logmh2omu2**2*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      120*pi**2*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      240*cf*Nc*pi**2*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      3360*xx**2*zeta3*zz**2*log(-((-1 + zz)/yy)) + 
+     -      6720*cf*Nc*xx**2*zeta3*zz**2*log(-((-1 + zz)/yy)) + 
+     -      3360*xx*yy*zeta3*zz**2*log(-((-1 + zz)/yy)) + 
+     -      6720*cf*Nc*xx*yy*zeta3*zz**2*log(-((-1 + zz)/yy)) - 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + xx)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + xx)/zz)) - 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(-((-1 + xx)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(-((-1 + xx)/zz)) - 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + xx)/zz)) - 
+     -      3360*xx**2*yy**2*zeta3*log(-((-1 + xx)/zz)) - 
+     -      5760*xx**3*zz*log(-((-1 + xx)/zz)) + 
+     -      2880*logmh2omu2*xx**3*zz*log(-((-1 + xx)/zz)) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + xx)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + xx)/zz)) - 
+     -      5760*xx**2*yy*zz*log(-((-1 + xx)/zz)) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*log(-((-1 + xx)/zz)) - 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + xx)/zz)) + 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + xx)/zz)) - 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(-((-1 + xx)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(-((-1 + xx)/zz)) - 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + xx)/zz)) - 
+     -      6720*xx**2*yy*zeta3*zz*log(-((-1 + xx)/zz)) - 
+     -      3360*xx*yy**2*zeta3*zz*log(-((-1 + xx)/zz)) - 
+     -      5760*xx**2*zz**2*log(-((-1 + xx)/zz)) + 
+     -      2880*logmh2omu2*xx**2*zz**2*log(-((-1 + xx)/zz)) - 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(-((-1 + xx)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(-((-1 + xx)/zz)) - 
+     -      5760*xx*yy*zz**2*log(-((-1 + xx)/zz)) + 
+     -      2880*logmh2omu2*xx*yy*zz**2*log(-((-1 + xx)/zz)) - 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(-((-1 + xx)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(-((-1 + xx)/zz)) - 
+     -      3360*xx**2*zeta3*zz**2*log(-((-1 + xx)/zz)) - 
+     -      3360*xx*yy*zeta3*zz**2*log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2**2*xx**3*yy*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      120*pi**2*xx**3*yy*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2**2*xx**2*yy**2*log(xx)*
+     -       log(-((-1 + xx)/zz)) + 
+     -      120*pi**2*xx**2*yy**2*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      2880*xx**3*zz*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2**2*xx**3*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      120*pi**2*xx**3*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      2880*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*log(xx)*
+     -       log(-((-1 + xx)/zz)) + 
+     -      240*pi**2*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(xx)*
+     -       log(-((-1 + xx)/zz)) + 
+     -      120*pi**2*xx*yy**2*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      2880*xx**2*zz**2*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2**2*xx**2*zz**2*log(xx)*
+     -       log(-((-1 + xx)/zz)) + 
+     -      120*pi**2*xx**2*zz**2*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      2880*xx*yy*zz**2*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(xx)*
+     -       log(-((-1 + xx)/zz)) + 
+     -      120*pi**2*xx*yy*zz**2*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2*xx**3*yy*log(xx)**2*log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2*xx**2*yy**2*log(xx)**2*
+     -       log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2*xx**3*zz*log(xx)**2*log(-((-1 + xx)/zz)) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(xx)**2*
+     -       log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2*xx*yy**2*zz*log(xx)**2*
+     -       log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2*xx**2*zz**2*log(xx)**2*
+     -       log(-((-1 + xx)/zz)) - 
+     -      720*logmh2omu2*xx*yy*zz**2*log(xx)**2*
+     -       log(-((-1 + xx)/zz)) - 
+     -      240*xx**3*yy*log(xx)**3*log(-((-1 + xx)/zz)) - 
+     -      240*xx**2*yy**2*log(xx)**3*log(-((-1 + xx)/zz)) - 
+     -      240*xx**3*zz*log(xx)**3*log(-((-1 + xx)/zz)) - 
+     -      480*xx**2*yy*zz*log(xx)**3*log(-((-1 + xx)/zz)) - 
+     -      240*xx*yy**2*zz*log(xx)**3*log(-((-1 + xx)/zz)) - 
+     -      240*xx**2*zz**2*log(xx)**3*log(-((-1 + xx)/zz)) - 
+     -      240*xx*yy*zz**2*log(xx)**3*log(-((-1 + xx)/zz)) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + yy)/zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*log(-((-1 + yy)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + yy)/zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*log(-((-1 + yy)/zz)) + 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(-((-1 + yy)/zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy**2*log(-((-1 + yy)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(-((-1 + yy)/zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy**2*
+     -       log(-((-1 + yy)/zz)) + 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + yy)/zz)) + 
+     -      6720*cf*Nc*xx**3*yy*zeta3*log(-((-1 + yy)/zz)) + 
+     -      3360*xx**2*yy**2*zeta3*log(-((-1 + yy)/zz)) + 
+     -      6720*cf*Nc*xx**2*yy**2*zeta3*log(-((-1 + yy)/zz)) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + yy)/zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      5760*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      2880*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      11520*cf*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      960*cf*logmh2omu2**3*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      480*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*
+     -       log(-((-1 + yy)/zz)) - 
+     -      5760*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      2880*logmh2omu2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      11520*cf*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      5760*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy**2*zz*
+     -       log(-((-1 + yy)/zz)) + 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + yy)/zz)) + 
+     -      6720*cf*Nc*xx**3*zeta3*zz*log(-((-1 + yy)/zz)) + 
+     -      6720*xx**2*yy*zeta3*zz*log(-((-1 + yy)/zz)) + 
+     -      13440*cf*Nc*xx**2*yy*zeta3*zz*log(-((-1 + yy)/zz)) + 
+     -      3360*xx*yy**2*zeta3*zz*log(-((-1 + yy)/zz)) + 
+     -      6720*cf*Nc*xx*yy**2*zeta3*zz*log(-((-1 + yy)/zz)) + 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*zz**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      5760*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      2880*logmh2omu2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      11520*cf*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      5760*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy*zz**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      5760*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      2880*logmh2omu2*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      11520*cf*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      5760*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      3360*xx**2*zeta3*zz**2*log(-((-1 + yy)/zz)) + 
+     -      6720*cf*Nc*xx**2*zeta3*zz**2*log(-((-1 + yy)/zz)) + 
+     -      3360*xx*yy*zeta3*zz**2*log(-((-1 + yy)/zz)) + 
+     -      6720*cf*Nc*xx*yy*zeta3*zz**2*log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2**2*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      120*pi**2*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      240*cf*Nc*pi**2*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2**2*xx**2*yy**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      120*pi**2*xx**2*yy**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      240*cf*Nc*pi**2*xx**2*yy**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2**2*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      120*pi**2*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      240*cf*Nc*pi**2*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      2880*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      5760*cf*Nc*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      2880*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      240*pi**2*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      480*cf*Nc*pi**2*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      2880*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      5760*cf*Nc*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      120*pi**2*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2**2*xx**2*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      120*pi**2*xx**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      240*cf*Nc*pi**2*xx**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      2880*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      5760*cf*Nc*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      120*pi**2*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      2880*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*logmh2omu2*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      5760*cf*Nc*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2*xx**3*yy*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2*Nc*xx**3*yy*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2*xx**2*yy**2*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2*Nc*xx**2*yy**2*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2*xx**3*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2*Nc*xx**3*zz*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*xx**2*yy*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      1440*cf*Nc*xx**2*yy*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*xx*yy**2*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2*xx*yy**2*zz*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      1440*cf*Nc*xx*yy**2*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2*Nc*xx*yy**2*zz*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2*xx**2*zz**2*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2*Nc*xx**2*zz**2*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*xx*yy*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      720*logmh2omu2*xx*yy*zz**2*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      1440*cf*Nc*xx*yy*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      1440*cf*logmh2omu2*Nc*xx*yy*zz**2*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*yy**2*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*Nc*yy**2*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      240*xx**3*yy*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      480*cf*Nc*xx**3*yy*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      240*xx**2*yy**2*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      480*cf*Nc*xx**2*yy**2*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      240*xx**3*zz*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      480*cf*Nc*xx**3*zz*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      480*xx**2*yy*zz*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      960*cf*Nc*xx**2*yy*zz*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      240*xx*yy**2*zz*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      480*cf*Nc*xx*yy**2*zz*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      240*xx**2*zz**2*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      480*cf*Nc*xx**2*zz**2*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      240*xx*yy*zz**2*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      480*cf*Nc*xx*yy*zz**2*log(yy)**3*log(-((-1 + yy)/zz)) + 
+     -      240*logmh2omu2**3*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      240*logmh2omu2**3*xx**2*yy**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      3360*xx**3*yy*zeta3*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      3360*xx**2*yy**2*zeta3*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      5760*xx**3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      2880*logmh2omu2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      240*logmh2omu2**3*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      5760*xx**2*yy*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      2880*logmh2omu2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      480*logmh2omu2**3*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      240*logmh2omu2**3*xx*yy**2*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      3360*xx**3*zeta3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      6720*xx**2*yy*zeta3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      3360*xx*yy**2*zeta3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      5760*xx**2*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      2880*logmh2omu2*xx**2*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      240*logmh2omu2**3*xx**2*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      5760*xx*yy*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      2880*logmh2omu2*xx*yy*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      240*logmh2omu2**3*xx*yy*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      3360*xx**2*zeta3*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      3360*xx*yy*zeta3*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      240*logmh2omu2**3*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*logmh2omu2**3*xx**2*yy**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      3360*xx**3*yy*zeta3*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6720*cf*Nc*xx**3*yy*zeta3*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      3360*xx**2*yy**2*zeta3*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6720*cf*Nc*xx**2*yy**2*zeta3*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*logmh2omu2**3*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      5760*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*logmh2omu2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      480*logmh2omu2**3*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      11520*cf*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      960*cf*logmh2omu2**3*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*pi**2*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      480*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      5760*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*logmh2omu2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*logmh2omu2**3*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      11520*cf*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      5760*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*pi**2*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      3360*xx**3*zeta3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6720*cf*Nc*xx**3*zeta3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6720*xx**2*yy*zeta3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      13440*cf*Nc*xx**2*yy*zeta3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      3360*xx*yy**2*zeta3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6720*cf*Nc*xx*yy**2*zeta3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*logmh2omu2**3*xx**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      5760*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*logmh2omu2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*logmh2omu2**3*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      11520*cf*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      5760*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*pi**2*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      5760*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*logmh2omu2*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      720*logmh2omu2**2*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      11520*cf*Nc*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      5760*cf*logmh2omu2*Nc*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*pi**2*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      3360*xx**2*zeta3*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6720*cf*Nc*xx**2*zeta3*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      3360*xx*yy*zeta3*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6720*cf*Nc*xx*yy*zeta3*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*xx**3*yy*log(zz) + 1440*logmh2omu2*xx**3*yy*log(zz) - 
+     -      240*logmh2omu2**3*xx**3*yy*log(zz) - 
+     -      2880*cf*Nc*xx**3*yy*log(zz) + 
+     -      1440*cf*logmh2omu2*Nc*xx**3*yy*log(zz) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*log(zz) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(zz) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*log(zz) - 
+     -      2880*xx**2*yy**2*log(zz) + 
+     -      1440*logmh2omu2*xx**2*yy**2*log(zz) - 
+     -      240*logmh2omu2**3*xx**2*yy**2*log(zz) - 
+     -      2880*cf*Nc*xx**2*yy**2*log(zz) + 
+     -      1440*cf*logmh2omu2*Nc*xx**2*yy**2*log(zz) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy**2*log(zz) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy**2*log(zz) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy**2*log(zz) - 
+     -      3360*xx**3*yy*zeta3*log(zz) - 
+     -      6720*cf*Nc*xx**3*yy*zeta3*log(zz) - 
+     -      3360*xx**2*yy**2*zeta3*log(zz) - 
+     -      6720*cf*Nc*xx**2*yy**2*zeta3*log(zz) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(zz) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*log(zz) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(zz) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*log(zz) - 
+     -      2880*xx**2*yy*zz*log(zz) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(zz) - 
+     -      480*logmh2omu2**3*xx**2*yy*zz*log(zz) - 
+     -      8640*cf*Nc*xx**2*yy*zz*log(zz) + 
+     -      4320*cf*logmh2omu2*Nc*xx**2*yy*zz*log(zz) - 
+     -      960*cf*logmh2omu2**3*Nc*xx**2*yy*zz*log(zz) + 
+     -      240*logmh2omu2*pi**2*xx**2*yy*zz*log(zz) + 
+     -      480*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*log(zz) - 
+     -      2880*xx*yy**2*zz*log(zz) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(zz) - 
+     -      240*logmh2omu2**3*xx*yy**2*zz*log(zz) - 
+     -      2880*cf*Nc*xx*yy**2*zz*log(zz) + 
+     -      1440*cf*logmh2omu2*Nc*xx*yy**2*zz*log(zz) - 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy**2*zz*log(zz) + 
+     -      120*logmh2omu2*pi**2*xx*yy**2*zz*log(zz) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy**2*zz*log(zz) - 
+     -      3360*xx**3*zeta3*zz*log(zz) - 
+     -      6720*cf*Nc*xx**3*zeta3*zz*log(zz) - 
+     -      6720*xx**2*yy*zeta3*zz*log(zz) - 
+     -      13440*cf*Nc*xx**2*yy*zeta3*zz*log(zz) - 
+     -      3360*xx*yy**2*zeta3*zz*log(zz) - 
+     -      6720*cf*Nc*xx*yy**2*zeta3*zz*log(zz) - 
+     -      240*logmh2omu2**3*xx**2*zz**2*log(zz) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*zz**2*log(zz) + 
+     -      120*logmh2omu2*pi**2*xx**2*zz**2*log(zz) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*zz**2*log(zz) - 
+     -      240*logmh2omu2**3*xx*yy*zz**2*log(zz) - 
+     -      5760*cf*Nc*xx*yy*zz**2*log(zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*log(zz) - 
+     -      480*cf*logmh2omu2**3*Nc*xx*yy*zz**2*log(zz) + 
+     -      120*logmh2omu2*pi**2*xx*yy*zz**2*log(zz) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx*yy*zz**2*log(zz) - 
+     -      3360*xx**2*zeta3*zz**2*log(zz) - 
+     -      6720*cf*Nc*xx**2*zeta3*zz**2*log(zz) - 
+     -      3360*xx*yy*zeta3*zz**2*log(zz) - 
+     -      6720*cf*Nc*xx*yy*zeta3*zz**2*log(zz) - 
+     -      1440*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/xx)*log(zz) - 
+     -      1440*logmh2omu2*xx**2*yy**2*Li2((-1 + xx + zz)/xx)*
+     -       log(zz) - 1440*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/xx)*
+     -       log(zz) - 2880*logmh2omu2*xx**2*yy*zz*
+     -       Li2((-1 + xx + zz)/xx)*log(zz) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + xx + zz)/xx)*
+     -       log(zz) - 1440*logmh2omu2*xx**2*zz**2*
+     -       Li2((-1 + xx + zz)/xx)*log(zz) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + xx + zz)/xx)*
+     -       log(zz) + 1440*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) + 2880*cf*logmh2omu2*Nc*xx**3*yy*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      1440*logmh2omu2*xx**2*yy**2*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) + 2880*cf*logmh2omu2*Nc*xx**2*yy**2*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      1440*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 1440*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) + 2880*logmh2omu2*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 1440*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) + 1440*logmh2omu2*xx*yy**2*zz*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) + 1440*logmh2omu2*xx**2*zz**2*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*zz**2*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 1440*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) + 1440*logmh2omu2*xx*yy*zz**2*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 1440*yy**2*zz**2*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 2880*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) + 1440*xx**3*yy*Li3((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*xx**2*yy**2*Li3((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*xx**3*zz*Li3((-1 + xx + zz)/xx)*log(zz) + 
+     -      2880*xx**2*yy*zz*Li3((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*xx*yy**2*zz*Li3((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*xx**2*zz**2*Li3((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*xx*yy*zz**2*Li3((-1 + xx + zz)/xx)*log(zz) - 
+     -      1440*xx**3*yy*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx**2*yy**2*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx**2*yy**2*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx**3*zz*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*xx**2*yy*zz*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      5760*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx*yy**2*zz*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx**2*zz**2*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx**2*zz**2*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx*yy*zz**2*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/yy)*log(zz) - 
+     -      720*logmh2omu2**2*xx**3*yy*log(-((-1 + zz)/xx))*log(zz) + 
+     -      120*pi**2*xx**3*yy*log(-((-1 + zz)/xx))*log(zz) - 
+     -      720*logmh2omu2**2*xx**2*yy**2*log(-((-1 + zz)/xx))*
+     -       log(zz) + 120*pi**2*xx**2*yy**2*log(-((-1 + zz)/xx))*
+     -       log(zz) + 2880*xx**3*zz*log(-((-1 + zz)/xx))*log(zz) - 
+     -      720*logmh2omu2**2*xx**3*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      120*pi**2*xx**3*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      2880*xx**2*yy*zz*log(-((-1 + zz)/xx))*log(zz) - 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/xx))*
+     -       log(zz) + 240*pi**2*xx**2*yy*zz*log(-((-1 + zz)/xx))*
+     -       log(zz) - 720*logmh2omu2**2*xx*yy**2*zz*
+     -       log(-((-1 + zz)/xx))*log(zz) + 
+     -      120*pi**2*xx*yy**2*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      2880*xx**2*zz**2*log(-((-1 + zz)/xx))*log(zz) - 
+     -      720*logmh2omu2**2*xx**2*zz**2*log(-((-1 + zz)/xx))*
+     -       log(zz) + 120*pi**2*xx**2*zz**2*log(-((-1 + zz)/xx))*
+     -       log(zz) + 2880*xx*yy*zz**2*log(-((-1 + zz)/xx))*log(zz) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + zz)/xx))*
+     -       log(zz) + 120*pi**2*xx*yy*zz**2*log(-((-1 + zz)/xx))*
+     -       log(zz) + 720*logmh2omu2**2*xx**3*yy*log(-((-1 + zz)/yy))*
+     -       log(zz) + 1440*cf*logmh2omu2**2*Nc*xx**3*yy*
+     -       log(-((-1 + zz)/yy))*log(zz) - 
+     -      120*pi**2*xx**3*yy*log(-((-1 + zz)/yy))*log(zz) - 
+     -      240*cf*Nc*pi**2*xx**3*yy*log(-((-1 + zz)/yy))*log(zz) + 
+     -      720*logmh2omu2**2*xx**2*yy**2*log(-((-1 + zz)/yy))*
+     -       log(zz) + 1440*cf*logmh2omu2**2*Nc*xx**2*yy**2*
+     -       log(-((-1 + zz)/yy))*log(zz) - 
+     -      120*pi**2*xx**2*yy**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      240*cf*Nc*pi**2*xx**2*yy**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      720*logmh2omu2**2*xx**3*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 120*pi**2*xx**3*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 240*cf*Nc*pi**2*xx**3*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 2880*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      1440*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 5760*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 2880*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       log(-((-1 + zz)/yy))*log(zz) + 
+     -      2880*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 240*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 480*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 2880*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 5760*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 2880*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       log(-((-1 + zz)/yy))*log(zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 120*pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 240*cf*Nc*pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 720*logmh2omu2**2*xx**2*zz**2*
+     -       log(-((-1 + zz)/yy))*log(zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) - 120*pi**2*xx**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) - 240*cf*Nc*pi**2*xx**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) + 2880*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) + 5760*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) - 2880*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       log(-((-1 + zz)/yy))*log(zz) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) - 120*pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) - 240*cf*Nc*pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) + 2880*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*logmh2omu2*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      5760*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) + 720*xx**3*yy*log(zz)**2 - 
+     -      360*logmh2omu2**2*xx**3*yy*log(zz)**2 + 
+     -      720*cf*Nc*xx**3*yy*log(zz)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*yy*log(zz)**2 + 
+     -      60*pi**2*xx**3*yy*log(zz)**2 + 
+     -      120*cf*Nc*pi**2*xx**3*yy*log(zz)**2 + 
+     -      720*xx**2*yy**2*log(zz)**2 - 
+     -      360*logmh2omu2**2*xx**2*yy**2*log(zz)**2 + 
+     -      720*cf*Nc*xx**2*yy**2*log(zz)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**2*yy**2*log(zz)**2 + 
+     -      60*pi**2*xx**2*yy**2*log(zz)**2 + 
+     -      120*cf*Nc*pi**2*xx**2*yy**2*log(zz)**2 - 
+     -      360*logmh2omu2**2*xx**3*zz*log(zz)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*zz*log(zz)**2 + 
+     -      60*pi**2*xx**3*zz*log(zz)**2 + 
+     -      120*cf*Nc*pi**2*xx**3*zz*log(zz)**2 + 
+     -      720*xx**2*yy*zz*log(zz)**2 - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(zz)**2 + 
+     -      2160*cf*Nc*xx**2*yy*zz*log(zz)**2 - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(zz)**2 + 
+     -      120*pi**2*xx**2*yy*zz*log(zz)**2 + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*log(zz)**2 + 
+     -      720*xx*yy**2*zz*log(zz)**2 - 
+     -      360*logmh2omu2**2*xx*yy**2*zz*log(zz)**2 + 
+     -      720*cf*Nc*xx*yy**2*zz*log(zz)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(zz)**2 + 
+     -      60*pi**2*xx*yy**2*zz*log(zz)**2 + 
+     -      120*cf*Nc*pi**2*xx*yy**2*zz*log(zz)**2 - 
+     -      360*logmh2omu2**2*xx**2*zz**2*log(zz)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx**2*zz**2*log(zz)**2 + 
+     -      60*pi**2*xx**2*zz**2*log(zz)**2 + 
+     -      120*cf*Nc*pi**2*xx**2*zz**2*log(zz)**2 - 
+     -      360*logmh2omu2**2*xx*yy*zz**2*log(zz)**2 + 
+     -      1440*cf*Nc*xx*yy*zz**2*log(zz)**2 - 
+     -      720*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(zz)**2 + 
+     -      60*pi**2*xx*yy*zz**2*log(zz)**2 + 
+     -      120*cf*Nc*pi**2*xx*yy*zz**2*log(zz)**2 - 
+     -      720*xx**3*yy*Li2((-1 + xx + zz)/xx)*log(zz)**2 - 
+     -      720*xx**2*yy**2*Li2((-1 + xx + zz)/xx)*log(zz)**2 - 
+     -      720*xx**3*zz*Li2((-1 + xx + zz)/xx)*log(zz)**2 - 
+     -      1440*xx**2*yy*zz*Li2((-1 + xx + zz)/xx)*log(zz)**2 - 
+     -      720*xx*yy**2*zz*Li2((-1 + xx + zz)/xx)*log(zz)**2 - 
+     -      720*xx**2*zz**2*Li2((-1 + xx + zz)/xx)*log(zz)**2 - 
+     -      720*xx*yy*zz**2*Li2((-1 + xx + zz)/xx)*log(zz)**2 + 
+     -      720*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      1440*cf*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      720*xx**2*yy**2*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      1440*cf*Nc*xx**2*yy**2*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      720*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      1440*cf*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      1440*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      720*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      1440*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      720*xx**2*zz**2*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      1440*cf*Nc*xx**2*zz**2*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      720*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      1440*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*log(zz)**2 - 
+     -      720*logmh2omu2*xx**3*yy*log(-((-1 + zz)/xx))*log(zz)**2 - 
+     -      720*logmh2omu2*xx**2*yy**2*log(-((-1 + zz)/xx))*
+     -       log(zz)**2 - 720*logmh2omu2*xx**3*zz*log(-((-1 + zz)/xx))*
+     -       log(zz)**2 - 1440*logmh2omu2*xx**2*yy*zz*
+     -       log(-((-1 + zz)/xx))*log(zz)**2 - 
+     -      720*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/xx))*
+     -       log(zz)**2 - 720*logmh2omu2*xx**2*zz**2*
+     -       log(-((-1 + zz)/xx))*log(zz)**2 - 
+     -      720*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/xx))*
+     -       log(zz)**2 + 720*logmh2omu2*xx**3*yy*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 + 1440*cf*logmh2omu2*Nc*xx**3*yy*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      720*logmh2omu2*xx**2*yy**2*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 + 1440*cf*logmh2omu2*Nc*xx**2*yy**2*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      720*logmh2omu2*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      1440*cf*logmh2omu2*Nc*xx**3*zz*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 720*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 + 1440*logmh2omu2*xx**2*yy*zz*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      1440*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 720*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 + 720*logmh2omu2*xx*yy**2*zz*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      1440*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      1440*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 + 720*logmh2omu2*xx**2*zz**2*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      1440*cf*logmh2omu2*Nc*xx**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 720*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 + 720*logmh2omu2*xx*yy*zz**2*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      1440*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      1440*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 720*yy**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 1440*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 240*logmh2omu2*xx**3*yy*log(zz)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx**3*yy*log(zz)**3 - 
+     -      240*logmh2omu2*xx**2*yy**2*log(zz)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx**2*yy**2*log(zz)**3 - 
+     -      240*logmh2omu2*xx**3*zz*log(zz)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx**3*zz*log(zz)**3 - 
+     -      480*logmh2omu2*xx**2*yy*zz*log(zz)**3 - 
+     -      960*cf*logmh2omu2*Nc*xx**2*yy*zz*log(zz)**3 - 
+     -      240*logmh2omu2*xx*yy**2*zz*log(zz)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx*yy**2*zz*log(zz)**3 - 
+     -      240*logmh2omu2*xx**2*zz**2*log(zz)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx**2*zz**2*log(zz)**3 - 
+     -      240*logmh2omu2*xx*yy*zz**2*log(zz)**3 - 
+     -      480*cf*logmh2omu2*Nc*xx*yy*zz**2*log(zz)**3 - 
+     -      240*xx**3*yy*log(-((-1 + zz)/xx))*log(zz)**3 - 
+     -      240*xx**2*yy**2*log(-((-1 + zz)/xx))*log(zz)**3 - 
+     -      240*xx**3*zz*log(-((-1 + zz)/xx))*log(zz)**3 - 
+     -      480*xx**2*yy*zz*log(-((-1 + zz)/xx))*log(zz)**3 - 
+     -      240*xx*yy**2*zz*log(-((-1 + zz)/xx))*log(zz)**3 - 
+     -      240*xx**2*zz**2*log(-((-1 + zz)/xx))*log(zz)**3 - 
+     -      240*xx*yy*zz**2*log(-((-1 + zz)/xx))*log(zz)**3 + 
+     -      240*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      480*cf*Nc*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      240*xx**2*yy**2*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      480*cf*Nc*xx**2*yy**2*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      240*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      480*cf*Nc*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      480*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      960*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      240*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      480*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      240*xx**2*zz**2*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      480*cf*Nc*xx**2*zz**2*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      240*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      480*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz)**3 - 
+     -      60*xx**3*yy*log(zz)**4 - 120*cf*Nc*xx**3*yy*log(zz)**4 - 
+     -      60*xx**2*yy**2*log(zz)**4 - 
+     -      120*cf*Nc*xx**2*yy**2*log(zz)**4 - 60*xx**3*zz*log(zz)**4 - 
+     -      120*cf*Nc*xx**3*zz*log(zz)**4 - 
+     -      120*xx**2*yy*zz*log(zz)**4 - 
+     -      240*cf*Nc*xx**2*yy*zz*log(zz)**4 - 
+     -      60*xx*yy**2*zz*log(zz)**4 - 
+     -      120*cf*Nc*xx*yy**2*zz*log(zz)**4 - 
+     -      60*xx**2*zz**2*log(zz)**4 - 
+     -      120*cf*Nc*xx**2*zz**2*log(zz)**4 - 
+     -      60*xx*yy*zz**2*log(zz)**4 - 120*cf*Nc*xx*yy*zz**2*log(zz)**4
+     -      ))/(720.*Nc*rt2*xx*yy*(xx + yy)*zz*(xx + zz)) 
+
+!==== eps^(-2)
+      a2mipart(1) = (2*(1 + 4*cf*Nc)*pi*rt2)/(Nc*yy)
+
+!==== eps^(-1)
+      a2mipart(2) = (-2*pi*rt2*(logmh2omu2 + 4*cf*logmh2omu2*Nc - log(xx) + 
+     -      log(-((-1 + yy)/xx)) + log(-((-1 + xx)/yy)) - 
+     -      log(((-1 + xx)*(-1 + yy))/(xx*yy)) + log(yy) + 
+     -      2*cf*Nc*log(yy) + log(-((-1 + zz)/xx)) - 
+     -      log(-((-1 + zz)/yy)) - 2*cf*Nc*log(-((-1 + zz)/yy)) + 
+     -      log(-((-1 + xx)/zz)) - log(-((-1 + yy)/zz)) - 
+     -      2*cf*Nc*log(-((-1 + yy)/zz)) - 
+     -      log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2*cf*Nc*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + log(zz) + 
+     -      2*cf*Nc*log(zz)))/(Nc*yy)  
+
+!==== eps^( 0)
+      a2mipart(3) = (pi*(6*logmh2omu2**2*xx**2 + 24*cf*Nc*xx**2 + 
+     -      24*cf*logmh2omu2**2*Nc*xx**2 - pi**2*xx**2 - 
+     -      4*cf*Nc*pi**2*xx**2 + 12*xx**2*Li2((-1 + xx + yy)/xx) + 
+     -      12*xx**2*Li2((-1 + xx + yy)/yy) - 
+     -      12*xx**2*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      12*xx**2*Li2((-1 + xx + zz)/xx) + 
+     -      12*xx**2*Li2((-1 + xx + zz)/zz) - 
+     -      12*xx**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      12*xx**2*Li2((-1 + yy + zz)/yy) - 
+     -      24*cf*Nc*xx**2*Li2((-1 + yy + zz)/yy) - 
+     -      12*xx**2*Li2((-1 + yy + zz)/zz) - 
+     -      24*cf*Nc*xx**2*Li2((-1 + yy + zz)/zz) + 
+     -      12*xx**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*Nc*xx**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*logmh2omu2*xx**2*log(xx) - 6*xx**2*log(xx)**2 + 
+     -      12*logmh2omu2*xx**2*log(-((-1 + yy)/xx)) + 
+     -      12*logmh2omu2*xx**2*log(-((-1 + xx)/yy)) + 
+     -      12*xx**2*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      12*logmh2omu2*xx**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      12*logmh2omu2*xx**2*log(yy) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*log(yy) + 
+     -      12*xx**2*log(-((-1 + yy)/xx))*log(yy) + 
+     -      6*xx**2*log(yy)**2 + 12*cf*Nc*xx**2*log(yy)**2 + 
+     -      12*logmh2omu2*xx**2*log(-((-1 + zz)/xx)) - 
+     -      12*logmh2omu2*xx**2*log(-((-1 + zz)/yy)) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*log(-((-1 + zz)/yy)) - 
+     -      12*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      24*cf*Nc*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*xx**2*log(-((-1 + xx)/zz)) + 
+     -      12*xx**2*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      12*logmh2omu2*xx**2*log(-((-1 + yy)/zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*log(-((-1 + yy)/zz)) - 
+     -      12*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      24*cf*Nc*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      12*xx**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      24*cf*Nc*xx**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      12*logmh2omu2*xx**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      12*logmh2omu2*xx**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*cf*Nc*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*logmh2omu2*xx**2*log(zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*log(zz) + 
+     -      12*xx**2*log(-((-1 + zz)/xx))*log(zz) - 
+     -      12*xx**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      24*cf*Nc*xx**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      6*xx**2*log(zz)**2 + 12*cf*Nc*xx**2*log(zz)**2))/
+     -  (3.*Nc*rt2*xx**2*yy) 
+
+!==== eps^( 1)
+      a2mipart(4) = (pi*(-2*logmh2omu2**3*xx**4 + 48*cf*Nc*xx**4 - 
+     -      24*cf*logmh2omu2*Nc*xx**4 - 8*cf*logmh2omu2**3*Nc*xx**4 + 
+     -      logmh2omu2*pi**2*xx**4 + 4*cf*logmh2omu2*Nc*pi**2*xx**4 - 
+     -      2*logmh2omu2**3*xx**3*yy + 48*cf*Nc*xx**3*yy - 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy - 
+     -      8*cf*logmh2omu2**3*Nc*xx**3*yy + 
+     -      logmh2omu2*pi**2*xx**3*yy + 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx**3*yy - 28*xx**4*zeta3 - 
+     -      112*cf*Nc*xx**4*zeta3 - 28*xx**3*yy*zeta3 - 
+     -      112*cf*Nc*xx**3*yy*zeta3 - 2*logmh2omu2**3*xx**3*zz + 
+     -      48*cf*Nc*xx**3*zz - 24*cf*logmh2omu2*Nc*xx**3*zz - 
+     -      8*cf*logmh2omu2**3*Nc*xx**3*zz + 
+     -      logmh2omu2*pi**2*xx**3*zz + 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx**3*zz - 
+     -      2*logmh2omu2**3*xx**2*yy*zz + 48*cf*Nc*xx**2*yy*zz - 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz - 
+     -      8*cf*logmh2omu2**3*Nc*xx**2*yy*zz + 
+     -      logmh2omu2*pi**2*xx**2*yy*zz + 
+     -      4*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz - 28*xx**3*zeta3*zz - 
+     -      112*cf*Nc*xx**3*zeta3*zz - 28*xx**2*yy*zeta3*zz - 
+     -      112*cf*Nc*xx**2*yy*zeta3*zz + 
+     -      12*logmh2omu2*xx**4*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      12*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      12*logmh2omu2*xx**4*Li2((-1 + xx + zz)/xx) - 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/xx) - 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/xx) - 
+     -      12*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + zz)/xx) - 
+     -      12*logmh2omu2*xx**4*Li2((-1 + xx + zz)/zz) - 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/zz) - 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/zz) - 
+     -      12*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + zz)/zz) + 
+     -      12*logmh2omu2*xx**4*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      12*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      12*logmh2omu2*xx**4*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*logmh2omu2*Nc*xx**4*Li2((-1 + yy + zz)/yy) + 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy) + 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy) + 
+     -      12*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      12*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      12*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      12*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      12*yy**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      24*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      12*logmh2omu2*xx**4*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**4*Li2((-1 + yy + zz)/zz) + 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz) + 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz) + 
+     -      12*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      12*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      12*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      12*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      12*yy**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      24*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      12*logmh2omu2*xx**4*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**4*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      12*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      24*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      12*xx**4*Li3((-1 + xx + yy)/xx) + 
+     -      12*xx**3*yy*Li3((-1 + xx + yy)/xx) + 
+     -      12*xx**3*zz*Li3((-1 + xx + yy)/xx) + 
+     -      12*xx**2*yy*zz*Li3((-1 + xx + yy)/xx) + 
+     -      12*xx**4*Li3((-1 + xx + yy)/yy) + 
+     -      12*xx**3*yy*Li3((-1 + xx + yy)/yy) + 
+     -      12*xx**3*zz*Li3((-1 + xx + yy)/yy) + 
+     -      12*xx**2*yy*zz*Li3((-1 + xx + yy)/yy) - 
+     -      12*xx**4*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      12*xx**3*yy*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      12*xx**3*zz*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      12*xx**2*yy*zz*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      12*xx**4*Li3((-1 + xx + zz)/xx) + 
+     -      12*xx**3*yy*Li3((-1 + xx + zz)/xx) + 
+     -      12*xx**3*zz*Li3((-1 + xx + zz)/xx) + 
+     -      12*xx**2*yy*zz*Li3((-1 + xx + zz)/xx) + 
+     -      12*xx**4*Li3((-1 + xx + zz)/zz) + 
+     -      12*xx**3*yy*Li3((-1 + xx + zz)/zz) + 
+     -      12*xx**3*zz*Li3((-1 + xx + zz)/zz) + 
+     -      12*xx**2*yy*zz*Li3((-1 + xx + zz)/zz) - 
+     -      12*xx**4*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      12*xx**3*yy*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      12*xx**3*zz*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      12*xx**2*yy*zz*Li3((-1 + xx + zz)/(xx*zz)) - 
+     -      12*xx**4*Li3((-1 + yy + zz)/yy) - 
+     -      24*cf*Nc*xx**4*Li3((-1 + yy + zz)/yy) - 
+     -      12*xx**3*yy*Li3((-1 + yy + zz)/yy) - 
+     -      24*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/yy) - 
+     -      12*xx**3*zz*Li3((-1 + yy + zz)/yy) - 
+     -      24*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/yy) - 
+     -      12*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) - 
+     -      24*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) - 
+     -      12*xx**4*Li3((-1 + yy + zz)/zz) - 
+     -      24*cf*Nc*xx**4*Li3((-1 + yy + zz)/zz) - 
+     -      12*xx**3*yy*Li3((-1 + yy + zz)/zz) - 
+     -      24*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/zz) - 
+     -      12*xx**3*zz*Li3((-1 + yy + zz)/zz) - 
+     -      24*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/zz) - 
+     -      12*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) - 
+     -      24*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      12*xx**4*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*Nc*xx**4*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      12*xx**3*yy*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      12*xx**3*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      12*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      24*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      6*logmh2omu2**2*xx**4*log(xx) - pi**2*xx**4*log(xx) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(xx) - pi**2*xx**3*yy*log(xx) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(xx) - pi**2*xx**3*zz*log(xx) + 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(xx) - 
+     -      pi**2*xx**2*yy*zz*log(xx) - 
+     -      12*xx**4*Li2((-1 + xx + zz)/zz)*log(xx) - 
+     -      12*xx**3*yy*Li2((-1 + xx + zz)/zz)*log(xx) - 
+     -      12*xx**3*zz*Li2((-1 + xx + zz)/zz)*log(xx) - 
+     -      12*xx**2*yy*zz*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      6*logmh2omu2*xx**4*log(xx)**2 + 
+     -      6*logmh2omu2*xx**3*yy*log(xx)**2 + 
+     -      6*logmh2omu2*xx**3*zz*log(xx)**2 + 
+     -      6*logmh2omu2*xx**2*yy*zz*log(xx)**2 + 2*xx**4*log(xx)**3 + 
+     -      2*xx**3*yy*log(xx)**3 + 2*xx**3*zz*log(xx)**3 + 
+     -      2*xx**2*yy*zz*log(xx)**3 - 
+     -      12*xx**2*(xx + yy)*(xx + zz)*Li2((-1 + xx + yy)/yy)*
+     -       (logmh2omu2 + log(xx)) - 
+     -      6*logmh2omu2**2*xx**4*log(-((-1 + yy)/xx)) + 
+     -      pi**2*xx**4*log(-((-1 + yy)/xx)) - 
+     -      12*xx**3*yy*log(-((-1 + yy)/xx)) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + yy)/xx)) + 
+     -      pi**2*xx**3*yy*log(-((-1 + yy)/xx)) - 
+     -      12*xx**2*yy**2*log(-((-1 + yy)/xx)) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + yy)/xx)) + 
+     -      pi**2*xx**3*zz*log(-((-1 + yy)/xx)) - 
+     -      12*xx**2*yy*zz*log(-((-1 + yy)/xx)) - 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + yy)/xx)) + 
+     -      pi**2*xx**2*yy*zz*log(-((-1 + yy)/xx)) - 
+     -      12*xx*yy**2*zz*log(-((-1 + yy)/xx)) - 
+     -      6*logmh2omu2**2*xx**4*log(-((-1 + xx)/yy)) + 
+     -      pi**2*xx**4*log(-((-1 + xx)/yy)) - 
+     -      12*xx**3*yy*log(-((-1 + xx)/yy)) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + xx)/yy)) + 
+     -      pi**2*xx**3*yy*log(-((-1 + xx)/yy)) - 
+     -      12*xx**2*yy**2*log(-((-1 + xx)/yy)) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + xx)/yy)) + 
+     -      pi**2*xx**3*zz*log(-((-1 + xx)/yy)) - 
+     -      12*xx**2*yy*zz*log(-((-1 + xx)/yy)) - 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + xx)/yy)) + 
+     -      pi**2*xx**2*yy*zz*log(-((-1 + xx)/yy)) - 
+     -      12*xx*yy**2*zz*log(-((-1 + xx)/yy)) - 
+     -      12*logmh2omu2*xx**4*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      12*logmh2omu2*xx**3*yy*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      12*logmh2omu2*xx**3*zz*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      12*logmh2omu2*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      6*xx**4*log(xx)**2*log(-((-1 + xx)/yy)) - 
+     -      6*xx**3*yy*log(xx)**2*log(-((-1 + xx)/yy)) - 
+     -      6*xx**3*zz*log(xx)**2*log(-((-1 + xx)/yy)) - 
+     -      6*xx**2*yy*zz*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      6*logmh2omu2**2*xx**4*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      pi**2*xx**4*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      12*xx**3*yy*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      6*logmh2omu2**2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      pi**2*xx**3*yy*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      12*xx**2*yy**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      6*logmh2omu2**2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      pi**2*xx**3*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      12*xx**2*yy*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      6*logmh2omu2**2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      pi**2*xx**2*yy*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      12*xx*yy**2*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      6*logmh2omu2**2*xx**4*log(yy) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**4*log(yy) + 
+     -      pi**2*xx**4*log(yy) + 2*cf*Nc*pi**2*xx**4*log(yy) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(yy) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*log(yy) + 
+     -      pi**2*xx**3*yy*log(yy) + 2*cf*Nc*pi**2*xx**3*yy*log(yy) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(yy) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*log(yy) + 
+     -      pi**2*xx**3*zz*log(yy) + 2*cf*Nc*pi**2*xx**3*zz*log(yy) - 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(yy) - 
+     -      24*cf*Nc*xx**2*yy*zz*log(yy) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(yy) + 
+     -      pi**2*xx**2*yy*zz*log(yy) + 
+     -      2*cf*Nc*pi**2*xx**2*yy*zz*log(yy) - 
+     -      24*cf*Nc*xx*yy**2*zz*log(yy) + 
+     -      12*xx**4*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      24*cf*Nc*xx**4*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      12*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      24*cf*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      12*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      24*cf*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      12*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy) + 
+     -      24*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      12*logmh2omu2*xx**4*log(-((-1 + yy)/xx))*log(yy) - 
+     -      12*logmh2omu2*xx**3*yy*log(-((-1 + yy)/xx))*log(yy) - 
+     -      12*logmh2omu2*xx**3*zz*log(-((-1 + yy)/xx))*log(yy) - 
+     -      12*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/xx))*log(yy) - 
+     -      6*logmh2omu2*xx**4*log(yy)**2 - 
+     -      12*cf*logmh2omu2*Nc*xx**4*log(yy)**2 - 
+     -      6*logmh2omu2*xx**3*yy*log(yy)**2 - 
+     -      12*cf*logmh2omu2*Nc*xx**3*yy*log(yy)**2 - 
+     -      6*logmh2omu2*xx**3*zz*log(yy)**2 - 
+     -      12*cf*logmh2omu2*Nc*xx**3*zz*log(yy)**2 - 
+     -      6*logmh2omu2*xx**2*yy*zz*log(yy)**2 - 
+     -      12*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)**2 - 
+     -      6*xx**4*log(-((-1 + yy)/xx))*log(yy)**2 - 
+     -      6*xx**3*yy*log(-((-1 + yy)/xx))*log(yy)**2 - 
+     -      6*xx**3*zz*log(-((-1 + yy)/xx))*log(yy)**2 - 
+     -      6*xx**2*yy*zz*log(-((-1 + yy)/xx))*log(yy)**2 - 
+     -      2*xx**4*log(yy)**3 - 4*cf*Nc*xx**4*log(yy)**3 - 
+     -      2*xx**3*yy*log(yy)**3 - 4*cf*Nc*xx**3*yy*log(yy)**3 - 
+     -      2*xx**3*zz*log(yy)**3 - 4*cf*Nc*xx**3*zz*log(yy)**3 - 
+     -      2*xx**2*yy*zz*log(yy)**3 - 4*cf*Nc*xx**2*yy*zz*log(yy)**3 - 
+     -      12*xx**2*(xx + yy)*(xx + zz)*Li2((-1 + xx + yy)/xx)*
+     -       (logmh2omu2 + log(yy)) - 
+     -      6*logmh2omu2**2*xx**4*log(-((-1 + zz)/xx)) + 
+     -      pi**2*xx**4*log(-((-1 + zz)/xx)) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + zz)/xx)) + 
+     -      pi**2*xx**3*yy*log(-((-1 + zz)/xx)) - 
+     -      12*xx**3*zz*log(-((-1 + zz)/xx)) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + zz)/xx)) + 
+     -      pi**2*xx**3*zz*log(-((-1 + zz)/xx)) - 
+     -      12*xx**2*yy*zz*log(-((-1 + zz)/xx)) - 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/xx)) + 
+     -      pi**2*xx**2*yy*zz*log(-((-1 + zz)/xx)) - 
+     -      12*xx**2*zz**2*log(-((-1 + zz)/xx)) - 
+     -      12*xx*yy*zz**2*log(-((-1 + zz)/xx)) + 
+     -      6*logmh2omu2**2*xx**4*log(-((-1 + zz)/yy)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**4*log(-((-1 + zz)/yy)) - 
+     -      pi**2*xx**4*log(-((-1 + zz)/yy)) - 
+     -      2*cf*Nc*pi**2*xx**4*log(-((-1 + zz)/yy)) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + zz)/yy)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*log(-((-1 + zz)/yy)) - 
+     -      pi**2*xx**3*yy*log(-((-1 + zz)/yy)) - 
+     -      2*cf*Nc*pi**2*xx**3*yy*log(-((-1 + zz)/yy)) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + zz)/yy)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      pi**2*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      2*cf*Nc*pi**2*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      12*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      24*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      2*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      12*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      24*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      12*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      24*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      12*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      12*logmh2omu2*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      24*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      24*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      6*logmh2omu2**2*xx**4*log(-((-1 + xx)/zz)) + 
+     -      pi**2*xx**4*log(-((-1 + xx)/zz)) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + xx)/zz)) + 
+     -      pi**2*xx**3*yy*log(-((-1 + xx)/zz)) - 
+     -      12*xx**3*zz*log(-((-1 + xx)/zz)) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + xx)/zz)) + 
+     -      pi**2*xx**3*zz*log(-((-1 + xx)/zz)) - 
+     -      12*xx**2*yy*zz*log(-((-1 + xx)/zz)) - 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + xx)/zz)) + 
+     -      pi**2*xx**2*yy*zz*log(-((-1 + xx)/zz)) - 
+     -      12*xx**2*zz**2*log(-((-1 + xx)/zz)) - 
+     -      12*xx*yy*zz**2*log(-((-1 + xx)/zz)) - 
+     -      12*logmh2omu2*xx**4*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      12*logmh2omu2*xx**3*yy*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      12*logmh2omu2*xx**3*zz*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      12*logmh2omu2*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      6*xx**4*log(xx)**2*log(-((-1 + xx)/zz)) - 
+     -      6*xx**3*yy*log(xx)**2*log(-((-1 + xx)/zz)) - 
+     -      6*xx**3*zz*log(xx)**2*log(-((-1 + xx)/zz)) - 
+     -      6*xx**2*yy*zz*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      6*logmh2omu2**2*xx**4*log(-((-1 + yy)/zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**4*log(-((-1 + yy)/zz)) - 
+     -      pi**2*xx**4*log(-((-1 + yy)/zz)) - 
+     -      2*cf*Nc*pi**2*xx**4*log(-((-1 + yy)/zz)) + 
+     -      6*logmh2omu2**2*xx**3*yy*log(-((-1 + yy)/zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*log(-((-1 + yy)/zz)) - 
+     -      pi**2*xx**3*yy*log(-((-1 + yy)/zz)) - 
+     -      2*cf*Nc*pi**2*xx**3*yy*log(-((-1 + yy)/zz)) + 
+     -      6*logmh2omu2**2*xx**3*zz*log(-((-1 + yy)/zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      pi**2*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      2*cf*Nc*pi**2*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      12*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      24*cf*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      2*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      12*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      24*cf*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      12*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      24*cf*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      12*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      24*cf*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx**4*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**4*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*logmh2omu2*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      12*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      12*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      24*cf*Nc*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      6*xx**4*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      12*cf*Nc*xx**4*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      6*xx**3*yy*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      12*cf*Nc*xx**3*yy*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      6*xx**3*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      12*cf*Nc*xx**3*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      6*xx**2*yy*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      12*cf*Nc*xx**2*yy*zz*log(yy)**2*log(-((-1 + yy)/zz)) + 
+     -      6*logmh2omu2**2*xx**4*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      pi**2*xx**4*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      6*logmh2omu2**2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      pi**2*xx**3*yy*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      12*xx**3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      6*logmh2omu2**2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      pi**2*xx**3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      12*xx**2*yy*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      6*logmh2omu2**2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      pi**2*xx**2*yy*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      12*xx**2*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      12*xx*yy*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      6*logmh2omu2**2*xx**4*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**4*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      pi**2*xx**4*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2*cf*Nc*pi**2*xx**4*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6*logmh2omu2**2*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      pi**2*xx**3*yy*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2*cf*Nc*pi**2*xx**3*yy*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6*logmh2omu2**2*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      pi**2*xx**3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2*cf*Nc*pi**2*xx**3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6*logmh2omu2**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*cf*Nc*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      pi**2*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2*cf*Nc*pi**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*cf*Nc*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*cf*Nc*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      12*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      12*logmh2omu2*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      24*cf*Nc*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      24*cf*logmh2omu2*Nc*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      6*logmh2omu2**2*xx**4*log(zz) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**4*log(zz) + 
+     -      pi**2*xx**4*log(zz) + 2*cf*Nc*pi**2*xx**4*log(zz) - 
+     -      6*logmh2omu2**2*xx**3*yy*log(zz) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*yy*log(zz) + 
+     -      pi**2*xx**3*yy*log(zz) + 2*cf*Nc*pi**2*xx**3*yy*log(zz) - 
+     -      6*logmh2omu2**2*xx**3*zz*log(zz) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**3*zz*log(zz) + 
+     -      pi**2*xx**3*zz*log(zz) + 2*cf*Nc*pi**2*xx**3*zz*log(zz) - 
+     -      6*logmh2omu2**2*xx**2*yy*zz*log(zz) - 
+     -      24*cf*Nc*xx**2*yy*zz*log(zz) - 
+     -      12*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(zz) + 
+     -      pi**2*xx**2*yy*zz*log(zz) + 
+     -      2*cf*Nc*pi**2*xx**2*yy*zz*log(zz) - 
+     -      24*cf*Nc*xx*yy*zz**2*log(zz) - 
+     -      12*xx**4*Li2((-1 + xx + zz)/xx)*log(zz) - 
+     -      12*xx**3*yy*Li2((-1 + xx + zz)/xx)*log(zz) - 
+     -      12*xx**3*zz*Li2((-1 + xx + zz)/xx)*log(zz) - 
+     -      12*xx**2*yy*zz*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      12*xx**4*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      24*cf*Nc*xx**4*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      12*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      24*cf*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      12*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      24*cf*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      12*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz) + 
+     -      24*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      12*logmh2omu2*xx**4*log(-((-1 + zz)/xx))*log(zz) - 
+     -      12*logmh2omu2*xx**3*yy*log(-((-1 + zz)/xx))*log(zz) - 
+     -      12*logmh2omu2*xx**3*zz*log(-((-1 + zz)/xx))*log(zz) - 
+     -      12*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      12*logmh2omu2*xx**4*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**4*log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*logmh2omu2*xx**3*yy*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*yy*log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*logmh2omu2*xx**3*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**3*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 12*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      12*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      24*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      6*logmh2omu2*xx**4*log(zz)**2 - 
+     -      12*cf*logmh2omu2*Nc*xx**4*log(zz)**2 - 
+     -      6*logmh2omu2*xx**3*yy*log(zz)**2 - 
+     -      12*cf*logmh2omu2*Nc*xx**3*yy*log(zz)**2 - 
+     -      6*logmh2omu2*xx**3*zz*log(zz)**2 - 
+     -      12*cf*logmh2omu2*Nc*xx**3*zz*log(zz)**2 - 
+     -      6*logmh2omu2*xx**2*yy*zz*log(zz)**2 - 
+     -      12*cf*logmh2omu2*Nc*xx**2*yy*zz*log(zz)**2 - 
+     -      6*xx**4*log(-((-1 + zz)/xx))*log(zz)**2 - 
+     -      6*xx**3*yy*log(-((-1 + zz)/xx))*log(zz)**2 - 
+     -      6*xx**3*zz*log(-((-1 + zz)/xx))*log(zz)**2 - 
+     -      6*xx**2*yy*zz*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      6*xx**4*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      12*cf*Nc*xx**4*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      6*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      12*cf*Nc*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      6*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      12*cf*Nc*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      6*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      12*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      2*xx**4*log(zz)**3 - 4*cf*Nc*xx**4*log(zz)**3 - 
+     -      2*xx**3*yy*log(zz)**3 - 4*cf*Nc*xx**3*yy*log(zz)**3 - 
+     -      2*xx**3*zz*log(zz)**3 - 4*cf*Nc*xx**3*zz*log(zz)**3 - 
+     -      2*xx**2*yy*zz*log(zz)**3 - 4*cf*Nc*xx**2*yy*zz*log(zz)**3))/
+     -  (3.*Nc*rt2*xx**2*yy*(xx + yy)*(xx + zz))  
+
+!==== eps^( 2)
+      a2mipart(5) = (pi*(60*logmh2omu2**4*xx**4 + 11520*cf*Nc*xx**4 - 
+     -      5760*cf*logmh2omu2*Nc*xx**4 + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**4 + 
+     -      240*cf*logmh2omu2**4*Nc*xx**4 - 
+     -      60*logmh2omu2**2*pi**2*xx**4 - 240*cf*Nc*pi**2*xx**4 - 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx**4 - 47*pi**4*xx**4 - 
+     -      188*cf*Nc*pi**4*xx**4 + 60*logmh2omu2**4*xx**3*yy + 
+     -      11520*cf*Nc*xx**3*yy - 5760*cf*logmh2omu2*Nc*xx**3*yy + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy + 
+     -      240*cf*logmh2omu2**4*Nc*xx**3*yy - 
+     -      60*logmh2omu2**2*pi**2*xx**3*yy - 
+     -      240*cf*Nc*pi**2*xx**3*yy - 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx**3*yy - 
+     -      47*pi**4*xx**3*yy - 188*cf*Nc*pi**4*xx**3*yy + 
+     -      3360*logmh2omu2*xx**4*zeta3 + 
+     -      13440*cf*logmh2omu2*Nc*xx**4*zeta3 + 
+     -      3360*logmh2omu2*xx**3*yy*zeta3 + 
+     -      13440*cf*logmh2omu2*Nc*xx**3*yy*zeta3 + 
+     -      60*logmh2omu2**4*xx**3*zz + 11520*cf*Nc*xx**3*zz - 
+     -      5760*cf*logmh2omu2*Nc*xx**3*zz + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz + 
+     -      240*cf*logmh2omu2**4*Nc*xx**3*zz - 
+     -      60*logmh2omu2**2*pi**2*xx**3*zz - 
+     -      240*cf*Nc*pi**2*xx**3*zz - 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx**3*zz - 
+     -      47*pi**4*xx**3*zz - 188*cf*Nc*pi**4*xx**3*zz + 
+     -      60*logmh2omu2**4*xx**2*yy*zz + 11520*cf*Nc*xx**2*yy*zz - 
+     -      5760*cf*logmh2omu2*Nc*xx**2*yy*zz + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz + 
+     -      240*cf*logmh2omu2**4*Nc*xx**2*yy*zz - 
+     -      60*logmh2omu2**2*pi**2*xx**2*yy*zz - 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz - 
+     -      240*cf*logmh2omu2**2*Nc*pi**2*xx**2*yy*zz - 
+     -      47*pi**4*xx**2*yy*zz - 188*cf*Nc*pi**4*xx**2*yy*zz + 
+     -      3360*logmh2omu2*xx**3*zeta3*zz + 
+     -      13440*cf*logmh2omu2*Nc*xx**3*zeta3*zz + 
+     -      3360*logmh2omu2*xx**2*yy*zeta3*zz + 
+     -      13440*cf*logmh2omu2*Nc*xx**2*yy*zeta3*zz - 
+     -      720*logmh2omu2**2*xx**4*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      120*pi**2*xx**4*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*xx**3*yy*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      120*pi**2*xx**3*yy*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*xx**2*yy**2*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      120*pi**2*xx**3*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*xx**2*yy*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      120*pi**2*xx**2*yy*zz*Li2((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*xx*yy**2*zz*Li2((-1 + xx + yy)/(xx*yy)) + 
+     -      720*logmh2omu2**2*xx**4*Li2((-1 + xx + zz)/xx) - 
+     -      120*pi**2*xx**4*Li2((-1 + xx + zz)/xx) + 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + xx + zz)/xx) - 
+     -      120*pi**2*xx**3*yy*Li2((-1 + xx + zz)/xx) + 
+     -      1440*xx**3*zz*Li2((-1 + xx + zz)/xx) + 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + xx + zz)/xx) - 
+     -      120*pi**2*xx**3*zz*Li2((-1 + xx + zz)/xx) + 
+     -      1440*xx**2*yy*zz*Li2((-1 + xx + zz)/xx) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + xx + zz)/xx) - 
+     -      120*pi**2*xx**2*yy*zz*Li2((-1 + xx + zz)/xx) + 
+     -      1440*xx**2*zz**2*Li2((-1 + xx + zz)/xx) + 
+     -      1440*xx*yy*zz**2*Li2((-1 + xx + zz)/xx) + 
+     -      720*logmh2omu2**2*xx**4*Li2((-1 + xx + zz)/zz) - 
+     -      120*pi**2*xx**4*Li2((-1 + xx + zz)/zz) + 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + xx + zz)/zz) - 
+     -      120*pi**2*xx**3*yy*Li2((-1 + xx + zz)/zz) + 
+     -      1440*xx**3*zz*Li2((-1 + xx + zz)/zz) + 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + xx + zz)/zz) - 
+     -      120*pi**2*xx**3*zz*Li2((-1 + xx + zz)/zz) + 
+     -      1440*xx**2*yy*zz*Li2((-1 + xx + zz)/zz) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + xx + zz)/zz) - 
+     -      120*pi**2*xx**2*yy*zz*Li2((-1 + xx + zz)/zz) + 
+     -      1440*xx**2*zz**2*Li2((-1 + xx + zz)/zz) + 
+     -      1440*xx*yy*zz**2*Li2((-1 + xx + zz)/zz) - 
+     -      720*logmh2omu2**2*xx**4*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      120*pi**2*xx**4*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      120*pi**2*xx**3*yy*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*xx**3*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      120*pi**2*xx**3*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*xx**2*yy*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + xx + zz)/(xx*zz)) + 
+     -      120*pi**2*xx**2*yy*zz*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*xx**2*zz**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*xx*yy*zz**2*Li2((-1 + xx + zz)/(xx*zz)) - 
+     -      720*logmh2omu2**2*xx**4*Li2((-1 + yy + zz)/yy) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**4*Li2((-1 + yy + zz)/yy) + 
+     -      120*pi**2*xx**4*Li2((-1 + yy + zz)/yy) + 
+     -      240*cf*Nc*pi**2*xx**4*Li2((-1 + yy + zz)/yy) - 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + yy + zz)/yy) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy) + 
+     -      120*pi**2*xx**3*yy*Li2((-1 + yy + zz)/yy) + 
+     -      240*cf*Nc*pi**2*xx**3*yy*Li2((-1 + yy + zz)/yy) - 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + yy + zz)/yy) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy) + 
+     -      120*pi**2*xx**3*zz*Li2((-1 + yy + zz)/yy) + 
+     -      240*cf*Nc*pi**2*xx**3*zz*Li2((-1 + yy + zz)/yy) + 
+     -      1440*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/yy) + 
+     -      120*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy) + 
+     -      1440*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy) + 
+     -      1440*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      1440*yy**2*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      1440*logmh2omu2*yy**2*zz**2*Li2((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/yy) - 
+     -      720*logmh2omu2**2*xx**4*Li2((-1 + yy + zz)/zz) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**4*Li2((-1 + yy + zz)/zz) + 
+     -      120*pi**2*xx**4*Li2((-1 + yy + zz)/zz) + 
+     -      240*cf*Nc*pi**2*xx**4*Li2((-1 + yy + zz)/zz) - 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + yy + zz)/zz) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz) + 
+     -      120*pi**2*xx**3*yy*Li2((-1 + yy + zz)/zz) + 
+     -      240*cf*Nc*pi**2*xx**3*yy*Li2((-1 + yy + zz)/zz) - 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + yy + zz)/zz) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz) + 
+     -      120*pi**2*xx**3*zz*Li2((-1 + yy + zz)/zz) + 
+     -      240*cf*Nc*pi**2*xx**3*zz*Li2((-1 + yy + zz)/zz) + 
+     -      1440*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/zz) + 
+     -      120*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/zz) + 
+     -      1440*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz) + 
+     -      1440*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      1440*yy**2*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*yy**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/zz) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/zz) + 
+     -      720*logmh2omu2**2*xx**4*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**4*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      120*pi**2*xx**4*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx**4*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      120*pi**2*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx**3*yy*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      120*pi**2*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx**3*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      120*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*logmh2omu2*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*
+     -       Li2((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + xx + yy)/xx) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + yy)/xx) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + yy)/xx) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + yy)/xx) - 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + xx + yy)/yy) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + yy)/yy) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + yy)/yy) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + yy)/yy) + 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + xx + zz)/xx) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + zz)/xx) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + zz)/xx) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + zz)/xx) - 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + xx + zz)/zz) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + zz)/zz) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + zz)/zz) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + zz)/zz) + 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + xx + zz)/(xx*zz)) + 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx**4*Li3((-1 + yy + zz)/yy) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*yy*Li3((-1 + yy + zz)/yy) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz*Li3((-1 + yy + zz)/yy) + 
+     -      1440*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/yy) + 
+     -      1440*xx*yy**2*zz*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/yy) + 
+     -      1440*xx*yy*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      1440*yy**2*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      2880*cf*Nc*yy**2*zz**2*Li3((-1 + yy + zz)/yy) + 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx**4*Li3((-1 + yy + zz)/zz) + 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*yy*Li3((-1 + yy + zz)/zz) + 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz*Li3((-1 + yy + zz)/zz) + 
+     -      1440*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/zz) + 
+     -      1440*xx*yy**2*zz*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/zz) + 
+     -      1440*xx*yy*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      1440*yy**2*zz**2*Li3((-1 + yy + zz)/zz) + 
+     -      2880*cf*Nc*yy**2*zz**2*Li3((-1 + yy + zz)/zz) - 
+     -      1440*logmh2omu2*xx**4*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx**4*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*logmh2omu2*xx**3*yy*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx**3*yy*
+     -       Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*logmh2omu2*xx**3*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz*
+     -       Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx*yy**2*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx*yy**2*zz*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*xx*yy*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*xx*yy*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      1440*yy**2*zz**2*Li3((-1 + yy + zz)/(yy*zz)) - 
+     -      2880*cf*Nc*yy**2*zz**2*Li3((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*xx**4*Li4((-1 + xx + yy)/xx) + 
+     -      1440*xx**3*yy*Li4((-1 + xx + yy)/xx) + 
+     -      1440*xx**3*zz*Li4((-1 + xx + yy)/xx) + 
+     -      1440*xx**2*yy*zz*Li4((-1 + xx + yy)/xx) + 
+     -      1440*xx**4*Li4((-1 + xx + yy)/yy) + 
+     -      1440*xx**3*yy*Li4((-1 + xx + yy)/yy) + 
+     -      1440*xx**3*zz*Li4((-1 + xx + yy)/yy) + 
+     -      1440*xx**2*yy*zz*Li4((-1 + xx + yy)/yy) - 
+     -      1440*xx**4*Li4((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*xx**3*yy*Li4((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*xx**3*zz*Li4((-1 + xx + yy)/(xx*yy)) - 
+     -      1440*xx**2*yy*zz*Li4((-1 + xx + yy)/(xx*yy)) + 
+     -      1440*xx**4*Li4((-1 + xx + zz)/xx) + 
+     -      1440*xx**3*yy*Li4((-1 + xx + zz)/xx) + 
+     -      1440*xx**3*zz*Li4((-1 + xx + zz)/xx) + 
+     -      1440*xx**2*yy*zz*Li4((-1 + xx + zz)/xx) + 
+     -      1440*xx**4*Li4((-1 + xx + zz)/zz) + 
+     -      1440*xx**3*yy*Li4((-1 + xx + zz)/zz) + 
+     -      1440*xx**3*zz*Li4((-1 + xx + zz)/zz) + 
+     -      1440*xx**2*yy*zz*Li4((-1 + xx + zz)/zz) - 
+     -      1440*xx**4*Li4((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*xx**3*yy*Li4((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*xx**3*zz*Li4((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*xx**2*yy*zz*Li4((-1 + xx + zz)/(xx*zz)) - 
+     -      1440*xx**4*Li4((-1 + yy + zz)/yy) - 
+     -      2880*cf*Nc*xx**4*Li4((-1 + yy + zz)/yy) - 
+     -      1440*xx**3*yy*Li4((-1 + yy + zz)/yy) - 
+     -      2880*cf*Nc*xx**3*yy*Li4((-1 + yy + zz)/yy) - 
+     -      1440*xx**3*zz*Li4((-1 + yy + zz)/yy) - 
+     -      2880*cf*Nc*xx**3*zz*Li4((-1 + yy + zz)/yy) - 
+     -      1440*xx**2*yy*zz*Li4((-1 + yy + zz)/yy) - 
+     -      2880*cf*Nc*xx**2*yy*zz*Li4((-1 + yy + zz)/yy) - 
+     -      1440*xx**4*Li4((-1 + yy + zz)/zz) - 
+     -      2880*cf*Nc*xx**4*Li4((-1 + yy + zz)/zz) - 
+     -      1440*xx**3*yy*Li4((-1 + yy + zz)/zz) - 
+     -      2880*cf*Nc*xx**3*yy*Li4((-1 + yy + zz)/zz) - 
+     -      1440*xx**3*zz*Li4((-1 + yy + zz)/zz) - 
+     -      2880*cf*Nc*xx**3*zz*Li4((-1 + yy + zz)/zz) - 
+     -      1440*xx**2*yy*zz*Li4((-1 + yy + zz)/zz) - 
+     -      2880*cf*Nc*xx**2*yy*zz*Li4((-1 + yy + zz)/zz) + 
+     -      1440*xx**4*Li4((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*Nc*xx**4*Li4((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*xx**3*yy*Li4((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*Nc*xx**3*yy*Li4((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*xx**3*zz*Li4((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*Nc*xx**3*zz*Li4((-1 + yy + zz)/(yy*zz)) + 
+     -      1440*xx**2*yy*zz*Li4((-1 + yy + zz)/(yy*zz)) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li4((-1 + yy + zz)/(yy*zz)) - 
+     -      240*logmh2omu2**3*xx**4*log(xx) + 
+     -      120*logmh2omu2*pi**2*xx**4*log(xx) - 
+     -      240*logmh2omu2**3*xx**3*yy*log(xx) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(xx) - 
+     -      3360*xx**4*zeta3*log(xx) - 3360*xx**3*yy*zeta3*log(xx) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(xx) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(xx) - 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(xx) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(xx) - 
+     -      3360*xx**3*zeta3*zz*log(xx) - 
+     -      3360*xx**2*yy*zeta3*zz*log(xx) + 
+     -      1440*logmh2omu2*xx**4*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      1440*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      1440*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/zz)*log(xx) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + zz)/zz)*
+     -       log(xx) - 1440*xx**4*Li3((-1 + xx + yy)/yy)*log(xx) - 
+     -      1440*xx**3*yy*Li3((-1 + xx + yy)/yy)*log(xx) - 
+     -      1440*xx**3*zz*Li3((-1 + xx + yy)/yy)*log(xx) - 
+     -      1440*xx**2*yy*zz*Li3((-1 + xx + yy)/yy)*log(xx) - 
+     -      1440*xx**4*Li3((-1 + xx + zz)/zz)*log(xx) - 
+     -      1440*xx**3*yy*Li3((-1 + xx + zz)/zz)*log(xx) - 
+     -      1440*xx**3*zz*Li3((-1 + xx + zz)/zz)*log(xx) - 
+     -      1440*xx**2*yy*zz*Li3((-1 + xx + zz)/zz)*log(xx) - 
+     -      360*logmh2omu2**2*xx**4*log(xx)**2 + 
+     -      60*pi**2*xx**4*log(xx)**2 - 
+     -      360*logmh2omu2**2*xx**3*yy*log(xx)**2 + 
+     -      60*pi**2*xx**3*yy*log(xx)**2 - 
+     -      360*logmh2omu2**2*xx**3*zz*log(xx)**2 + 
+     -      60*pi**2*xx**3*zz*log(xx)**2 - 
+     -      360*logmh2omu2**2*xx**2*yy*zz*log(xx)**2 + 
+     -      60*pi**2*xx**2*yy*zz*log(xx)**2 + 
+     -      720*xx**4*Li2((-1 + xx + zz)/zz)*log(xx)**2 + 
+     -      720*xx**3*yy*Li2((-1 + xx + zz)/zz)*log(xx)**2 + 
+     -      720*xx**3*zz*Li2((-1 + xx + zz)/zz)*log(xx)**2 + 
+     -      720*xx**2*yy*zz*Li2((-1 + xx + zz)/zz)*log(xx)**2 - 
+     -      240*logmh2omu2*xx**4*log(xx)**3 - 
+     -      240*logmh2omu2*xx**3*yy*log(xx)**3 - 
+     -      240*logmh2omu2*xx**3*zz*log(xx)**3 - 
+     -      240*logmh2omu2*xx**2*yy*zz*log(xx)**3 - 
+     -      60*xx**4*log(xx)**4 - 60*xx**3*yy*log(xx)**4 - 
+     -      60*xx**3*zz*log(xx)**4 - 60*xx**2*yy*zz*log(xx)**4 - 
+     -      120*xx*(xx + yy)*(xx + zz)*Li2((-1 + xx + yy)/yy)*
+     -       (-6*logmh2omu2**2*xx + pi**2*xx - 12*yy - 
+     -         12*logmh2omu2*xx*log(xx) - 6*xx*log(xx)**2) + 
+     -      240*logmh2omu2**3*xx**4*log(-((-1 + yy)/xx)) - 
+     -      120*logmh2omu2*pi**2*xx**4*log(-((-1 + yy)/xx)) - 
+     -      2880*xx**3*yy*log(-((-1 + yy)/xx)) + 
+     -      1440*logmh2omu2*xx**3*yy*log(-((-1 + yy)/xx)) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + yy)/xx)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + yy)/xx)) - 
+     -      2880*xx**2*yy**2*log(-((-1 + yy)/xx)) + 
+     -      1440*logmh2omu2*xx**2*yy**2*log(-((-1 + yy)/xx)) + 
+     -      3360*xx**4*zeta3*log(-((-1 + yy)/xx)) + 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + yy)/xx)) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + yy)/xx)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + yy)/xx)) - 
+     -      2880*xx**2*yy*zz*log(-((-1 + yy)/xx)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/xx)) + 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + yy)/xx)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + yy)/xx)) - 
+     -      2880*xx*yy**2*zz*log(-((-1 + yy)/xx)) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(-((-1 + yy)/xx)) + 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + yy)/xx)) + 
+     -      3360*xx**2*yy*zeta3*zz*log(-((-1 + yy)/xx)) + 
+     -      240*logmh2omu2**3*xx**4*log(-((-1 + xx)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx**4*log(-((-1 + xx)/yy)) - 
+     -      2880*xx**3*yy*log(-((-1 + xx)/yy)) + 
+     -      1440*logmh2omu2*xx**3*yy*log(-((-1 + xx)/yy)) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + xx)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + xx)/yy)) - 
+     -      2880*xx**2*yy**2*log(-((-1 + xx)/yy)) + 
+     -      1440*logmh2omu2*xx**2*yy**2*log(-((-1 + xx)/yy)) + 
+     -      3360*xx**4*zeta3*log(-((-1 + xx)/yy)) + 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + xx)/yy)) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + xx)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + xx)/yy)) - 
+     -      2880*xx**2*yy*zz*log(-((-1 + xx)/yy)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(-((-1 + xx)/yy)) + 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + xx)/yy)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + xx)/yy)) - 
+     -      2880*xx*yy**2*zz*log(-((-1 + xx)/yy)) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(-((-1 + xx)/yy)) + 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + xx)/yy)) + 
+     -      3360*xx**2*yy*zeta3*zz*log(-((-1 + xx)/yy)) + 
+     -      720*logmh2omu2**2*xx**4*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      120*pi**2*xx**4*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      1440*xx**3*yy*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      720*logmh2omu2**2*xx**3*yy*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      120*pi**2*xx**3*yy*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      1440*xx**2*yy**2*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      720*logmh2omu2**2*xx**3*zz*log(xx)*log(-((-1 + xx)/yy)) - 
+     -      120*pi**2*xx**3*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      1440*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(xx)*
+     -       log(-((-1 + xx)/yy)) - 
+     -      120*pi**2*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      1440*xx*yy**2*zz*log(xx)*log(-((-1 + xx)/yy)) + 
+     -      720*logmh2omu2*xx**4*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      720*logmh2omu2*xx**3*yy*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      720*logmh2omu2*xx**3*zz*log(xx)**2*log(-((-1 + xx)/yy)) + 
+     -      720*logmh2omu2*xx**2*yy*zz*log(xx)**2*
+     -       log(-((-1 + xx)/yy)) + 
+     -      240*xx**4*log(xx)**3*log(-((-1 + xx)/yy)) + 
+     -      240*xx**3*yy*log(xx)**3*log(-((-1 + xx)/yy)) + 
+     -      240*xx**3*zz*log(xx)**3*log(-((-1 + xx)/yy)) + 
+     -      240*xx**2*yy*zz*log(xx)**3*log(-((-1 + xx)/yy)) - 
+     -      240*logmh2omu2**3*xx**4*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      120*logmh2omu2*pi**2*xx**4*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      2880*xx**3*yy*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      1440*logmh2omu2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      240*logmh2omu2**3*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      2880*xx**2*yy**2*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      1440*logmh2omu2*xx**2*yy**2*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      3360*xx**4*zeta3*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      3360*xx**3*yy*zeta3*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      240*logmh2omu2**3*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      2880*xx**2*yy*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      240*logmh2omu2**3*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      2880*xx*yy**2*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*
+     -       log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      3360*xx**3*zeta3*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) - 
+     -      3360*xx**2*yy*zeta3*zz*log(((-1 + xx)*(-1 + yy))/(xx*yy)) + 
+     -      240*logmh2omu2**3*xx**4*log(yy) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**4*log(yy) - 
+     -      120*logmh2omu2*pi**2*xx**4*log(yy) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**4*log(yy) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(yy) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*log(yy) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(yy) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*log(yy) + 
+     -      3360*xx**4*zeta3*log(yy) + 6720*cf*Nc*xx**4*zeta3*log(yy) + 
+     -      3360*xx**3*yy*zeta3*log(yy) + 
+     -      6720*cf*Nc*xx**3*yy*zeta3*log(yy) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(yy) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*log(yy) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(yy) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*log(yy) + 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(yy) - 
+     -      5760*cf*Nc*xx**2*yy*zz*log(yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy*zz*log(yy) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(yy) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*log(yy) - 
+     -      5760*cf*Nc*xx*yy**2*zz*log(yy) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*log(yy) + 
+     -      3360*xx**3*zeta3*zz*log(yy) + 
+     -      6720*cf*Nc*xx**3*zeta3*zz*log(yy) + 
+     -      3360*xx**2*yy*zeta3*zz*log(yy) + 
+     -      6720*cf*Nc*xx**2*yy*zeta3*zz*log(yy) - 
+     -      1440*logmh2omu2*xx**4*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**4*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 1440*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 2880*cf*logmh2omu2*Nc*xx**3*yy*
+     -       Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      1440*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 1440*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 1440*logmh2omu2*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 1440*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 2880*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 1440*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 2880*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 1440*yy**2*zz**2*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 2880*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/zz)*
+     -       log(yy) - 1440*xx**4*Li3((-1 + xx + yy)/xx)*log(yy) - 
+     -      1440*xx**3*yy*Li3((-1 + xx + yy)/xx)*log(yy) - 
+     -      1440*xx**3*zz*Li3((-1 + xx + yy)/xx)*log(yy) - 
+     -      1440*xx**2*yy*zz*Li3((-1 + xx + yy)/xx)*log(yy) + 
+     -      1440*xx**4*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      2880*cf*Nc*xx**4*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      1440*xx**3*yy*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      2880*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      1440*xx**3*zz*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      2880*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      1440*xx**2*yy*zz*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/zz)*log(yy) + 
+     -      720*logmh2omu2**2*xx**4*log(-((-1 + yy)/xx))*log(yy) - 
+     -      120*pi**2*xx**4*log(-((-1 + yy)/xx))*log(yy) + 
+     -      1440*xx**3*yy*log(-((-1 + yy)/xx))*log(yy) + 
+     -      720*logmh2omu2**2*xx**3*yy*log(-((-1 + yy)/xx))*log(yy) - 
+     -      120*pi**2*xx**3*yy*log(-((-1 + yy)/xx))*log(yy) + 
+     -      1440*xx**2*yy**2*log(-((-1 + yy)/xx))*log(yy) + 
+     -      720*logmh2omu2**2*xx**3*zz*log(-((-1 + yy)/xx))*log(yy) - 
+     -      120*pi**2*xx**3*zz*log(-((-1 + yy)/xx))*log(yy) + 
+     -      1440*xx**2*yy*zz*log(-((-1 + yy)/xx))*log(yy) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + yy)/xx))*
+     -       log(yy) - 120*pi**2*xx**2*yy*zz*log(-((-1 + yy)/xx))*
+     -       log(yy) + 1440*xx*yy**2*zz*log(-((-1 + yy)/xx))*log(yy) + 
+     -      360*logmh2omu2**2*xx**4*log(yy)**2 + 
+     -      720*cf*logmh2omu2**2*Nc*xx**4*log(yy)**2 - 
+     -      60*pi**2*xx**4*log(yy)**2 - 
+     -      120*cf*Nc*pi**2*xx**4*log(yy)**2 + 
+     -      360*logmh2omu2**2*xx**3*yy*log(yy)**2 + 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*yy*log(yy)**2 - 
+     -      60*pi**2*xx**3*yy*log(yy)**2 - 
+     -      120*cf*Nc*pi**2*xx**3*yy*log(yy)**2 + 
+     -      360*logmh2omu2**2*xx**3*zz*log(yy)**2 + 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*zz*log(yy)**2 - 
+     -      60*pi**2*xx**3*zz*log(yy)**2 - 
+     -      120*cf*Nc*pi**2*xx**3*zz*log(yy)**2 + 
+     -      360*logmh2omu2**2*xx**2*yy*zz*log(yy)**2 + 
+     -      1440*cf*Nc*xx**2*yy*zz*log(yy)**2 + 
+     -      720*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(yy)**2 - 
+     -      60*pi**2*xx**2*yy*zz*log(yy)**2 - 
+     -      120*cf*Nc*pi**2*xx**2*yy*zz*log(yy)**2 + 
+     -      1440*cf*Nc*xx*yy**2*zz*log(yy)**2 - 
+     -      720*xx**4*Li2((-1 + yy + zz)/zz)*log(yy)**2 - 
+     -      1440*cf*Nc*xx**4*Li2((-1 + yy + zz)/zz)*log(yy)**2 - 
+     -      720*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy)**2 - 
+     -      1440*cf*Nc*xx**3*yy*Li2((-1 + yy + zz)/zz)*log(yy)**2 - 
+     -      720*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 - 
+     -      1440*cf*Nc*xx**3*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 - 
+     -      720*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 - 
+     -      1440*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/zz)*log(yy)**2 + 
+     -      720*logmh2omu2*xx**4*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      720*logmh2omu2*xx**3*yy*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      720*logmh2omu2*xx**3*zz*log(-((-1 + yy)/xx))*log(yy)**2 + 
+     -      720*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/xx))*
+     -       log(yy)**2 + 240*logmh2omu2*xx**4*log(yy)**3 + 
+     -      480*cf*logmh2omu2*Nc*xx**4*log(yy)**3 + 
+     -      240*logmh2omu2*xx**3*yy*log(yy)**3 + 
+     -      480*cf*logmh2omu2*Nc*xx**3*yy*log(yy)**3 + 
+     -      240*logmh2omu2*xx**3*zz*log(yy)**3 + 
+     -      480*cf*logmh2omu2*Nc*xx**3*zz*log(yy)**3 + 
+     -      240*logmh2omu2*xx**2*yy*zz*log(yy)**3 + 
+     -      480*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)**3 + 
+     -      240*xx**4*log(-((-1 + yy)/xx))*log(yy)**3 + 
+     -      240*xx**3*yy*log(-((-1 + yy)/xx))*log(yy)**3 + 
+     -      240*xx**3*zz*log(-((-1 + yy)/xx))*log(yy)**3 + 
+     -      240*xx**2*yy*zz*log(-((-1 + yy)/xx))*log(yy)**3 + 
+     -      60*xx**4*log(yy)**4 + 120*cf*Nc*xx**4*log(yy)**4 + 
+     -      60*xx**3*yy*log(yy)**4 + 120*cf*Nc*xx**3*yy*log(yy)**4 + 
+     -      60*xx**3*zz*log(yy)**4 + 120*cf*Nc*xx**3*zz*log(yy)**4 + 
+     -      60*xx**2*yy*zz*log(yy)**4 + 
+     -      120*cf*Nc*xx**2*yy*zz*log(yy)**4 - 
+     -      120*xx*(xx + yy)*(xx + zz)*Li2((-1 + xx + yy)/xx)*
+     -       (-6*logmh2omu2**2*xx + pi**2*xx - 12*yy - 
+     -         12*logmh2omu2*xx*log(yy) - 6*xx*log(yy)**2) + 
+     -      240*logmh2omu2**3*xx**4*log(-((-1 + zz)/xx)) - 
+     -      120*logmh2omu2*pi**2*xx**4*log(-((-1 + zz)/xx)) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + zz)/xx)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + zz)/xx)) + 
+     -      3360*xx**4*zeta3*log(-((-1 + zz)/xx)) + 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + zz)/xx)) - 
+     -      2880*xx**3*zz*log(-((-1 + zz)/xx)) + 
+     -      1440*logmh2omu2*xx**3*zz*log(-((-1 + zz)/xx)) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + zz)/xx)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + zz)/xx)) - 
+     -      2880*xx**2*yy*zz*log(-((-1 + zz)/xx)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/xx)) + 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + zz)/xx)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + zz)/xx)) + 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + zz)/xx)) + 
+     -      3360*xx**2*yy*zeta3*zz*log(-((-1 + zz)/xx)) - 
+     -      2880*xx**2*zz**2*log(-((-1 + zz)/xx)) + 
+     -      1440*logmh2omu2*xx**2*zz**2*log(-((-1 + zz)/xx)) - 
+     -      2880*xx*yy*zz**2*log(-((-1 + zz)/xx)) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/xx)) - 
+     -      240*logmh2omu2**3*xx**4*log(-((-1 + zz)/yy)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**4*log(-((-1 + zz)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx**4*log(-((-1 + zz)/yy)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**4*log(-((-1 + zz)/yy)) - 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + zz)/yy)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*log(-((-1 + zz)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + zz)/yy)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*log(-((-1 + zz)/yy)) - 
+     -      3360*xx**4*zeta3*log(-((-1 + zz)/yy)) - 
+     -      6720*cf*Nc*xx**4*zeta3*log(-((-1 + zz)/yy)) - 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + zz)/yy)) - 
+     -      6720*cf*Nc*xx**3*yy*zeta3*log(-((-1 + zz)/yy)) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*log(-((-1 + zz)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + zz)/yy)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*log(-((-1 + zz)/yy)) - 
+     -      2880*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      5760*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      120*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*
+     -       log(-((-1 + zz)/yy)) - 
+     -      2880*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      5760*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      120*pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) + 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*log(-((-1 + zz)/yy)) - 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + zz)/yy)) - 
+     -      6720*cf*Nc*xx**3*zeta3*zz*log(-((-1 + zz)/yy)) - 
+     -      3360*xx**2*yy*zeta3*zz*log(-((-1 + zz)/yy)) - 
+     -      6720*cf*Nc*xx**2*yy*zeta3*zz*log(-((-1 + zz)/yy)) - 
+     -      2880*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      5760*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      120*pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) + 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*log(-((-1 + zz)/yy)) - 
+     -      2880*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      1440*logmh2omu2*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      720*logmh2omu2**2*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      5760*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) - 
+     -      1440*cf*logmh2omu2**2*Nc*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      120*pi**2*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      240*cf*Nc*pi**2*yy**2*zz**2*log(-((-1 + zz)/yy)) + 
+     -      240*logmh2omu2**3*xx**4*log(-((-1 + xx)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx**4*log(-((-1 + xx)/zz)) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + xx)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + xx)/zz)) + 
+     -      3360*xx**4*zeta3*log(-((-1 + xx)/zz)) + 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + xx)/zz)) - 
+     -      2880*xx**3*zz*log(-((-1 + xx)/zz)) + 
+     -      1440*logmh2omu2*xx**3*zz*log(-((-1 + xx)/zz)) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + xx)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + xx)/zz)) - 
+     -      2880*xx**2*yy*zz*log(-((-1 + xx)/zz)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(-((-1 + xx)/zz)) + 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + xx)/zz)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + xx)/zz)) + 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + xx)/zz)) + 
+     -      3360*xx**2*yy*zeta3*zz*log(-((-1 + xx)/zz)) - 
+     -      2880*xx**2*zz**2*log(-((-1 + xx)/zz)) + 
+     -      1440*logmh2omu2*xx**2*zz**2*log(-((-1 + xx)/zz)) - 
+     -      2880*xx*yy*zz**2*log(-((-1 + xx)/zz)) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(-((-1 + xx)/zz)) + 
+     -      720*logmh2omu2**2*xx**4*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      120*pi**2*xx**4*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      720*logmh2omu2**2*xx**3*yy*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      120*pi**2*xx**3*yy*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      1440*xx**3*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      720*logmh2omu2**2*xx**3*zz*log(xx)*log(-((-1 + xx)/zz)) - 
+     -      120*pi**2*xx**3*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      1440*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(xx)*
+     -       log(-((-1 + xx)/zz)) - 
+     -      120*pi**2*xx**2*yy*zz*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      1440*xx**2*zz**2*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      1440*xx*yy*zz**2*log(xx)*log(-((-1 + xx)/zz)) + 
+     -      720*logmh2omu2*xx**4*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      720*logmh2omu2*xx**3*yy*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      720*logmh2omu2*xx**3*zz*log(xx)**2*log(-((-1 + xx)/zz)) + 
+     -      720*logmh2omu2*xx**2*yy*zz*log(xx)**2*
+     -       log(-((-1 + xx)/zz)) + 
+     -      240*xx**4*log(xx)**3*log(-((-1 + xx)/zz)) + 
+     -      240*xx**3*yy*log(xx)**3*log(-((-1 + xx)/zz)) + 
+     -      240*xx**3*zz*log(xx)**3*log(-((-1 + xx)/zz)) + 
+     -      240*xx**2*yy*zz*log(xx)**3*log(-((-1 + xx)/zz)) - 
+     -      240*logmh2omu2**3*xx**4*log(-((-1 + yy)/zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**4*log(-((-1 + yy)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx**4*log(-((-1 + yy)/zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**4*log(-((-1 + yy)/zz)) - 
+     -      240*logmh2omu2**3*xx**3*yy*log(-((-1 + yy)/zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*log(-((-1 + yy)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(-((-1 + yy)/zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*log(-((-1 + yy)/zz)) - 
+     -      3360*xx**4*zeta3*log(-((-1 + yy)/zz)) - 
+     -      6720*cf*Nc*xx**4*zeta3*log(-((-1 + yy)/zz)) - 
+     -      3360*xx**3*yy*zeta3*log(-((-1 + yy)/zz)) - 
+     -      6720*cf*Nc*xx**3*yy*zeta3*log(-((-1 + yy)/zz)) - 
+     -      240*logmh2omu2**3*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*log(-((-1 + yy)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(-((-1 + yy)/zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*log(-((-1 + yy)/zz)) - 
+     -      2880*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      5760*cf*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) - 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + yy)/zz)) + 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*
+     -       log(-((-1 + yy)/zz)) - 
+     -      2880*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      5760*cf*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*log(-((-1 + yy)/zz)) - 
+     -      3360*xx**3*zeta3*zz*log(-((-1 + yy)/zz)) - 
+     -      6720*cf*Nc*xx**3*zeta3*zz*log(-((-1 + yy)/zz)) - 
+     -      3360*xx**2*yy*zeta3*zz*log(-((-1 + yy)/zz)) - 
+     -      6720*cf*Nc*xx**2*yy*zeta3*zz*log(-((-1 + yy)/zz)) - 
+     -      2880*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      5760*cf*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*log(-((-1 + yy)/zz)) - 
+     -      2880*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      1440*logmh2omu2*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      5760*cf*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*yy**2*zz**2*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*yy**2*zz**2*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx**4*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**4*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx**4*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx**4*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx**3*yy*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx**3*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      1440*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      2880*cf*Nc*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      120*pi**2*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      1440*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      2880*cf*Nc*xx*yy**2*zz*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      1440*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      2880*cf*Nc*xx*yy*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) + 
+     -      1440*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      1440*logmh2omu2*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) + 
+     -      2880*cf*Nc*yy**2*zz**2*log(yy)*log(-((-1 + yy)/zz)) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*log(yy)*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2*xx**4*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2*Nc*xx**4*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2*xx**3*yy*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2*Nc*xx**3*yy*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2*xx**3*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2*Nc*xx**3*zz*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*xx**2*yy*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      720*logmh2omu2*xx**2*yy*zz*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      1440*cf*Nc*xx**2*yy*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*logmh2omu2*Nc*xx**2*yy*zz*log(yy)**2*
+     -       log(-((-1 + yy)/zz)) - 
+     -      720*xx*yy**2*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*Nc*xx*yy**2*zz*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      720*xx*yy*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*Nc*xx*yy*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      720*yy**2*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      1440*cf*Nc*yy**2*zz**2*log(yy)**2*log(-((-1 + yy)/zz)) - 
+     -      240*xx**4*log(yy)**3*log(-((-1 + yy)/zz)) - 
+     -      480*cf*Nc*xx**4*log(yy)**3*log(-((-1 + yy)/zz)) - 
+     -      240*xx**3*yy*log(yy)**3*log(-((-1 + yy)/zz)) - 
+     -      480*cf*Nc*xx**3*yy*log(yy)**3*log(-((-1 + yy)/zz)) - 
+     -      240*xx**3*zz*log(yy)**3*log(-((-1 + yy)/zz)) - 
+     -      480*cf*Nc*xx**3*zz*log(yy)**3*log(-((-1 + yy)/zz)) - 
+     -      240*xx**2*yy*zz*log(yy)**3*log(-((-1 + yy)/zz)) - 
+     -      480*cf*Nc*xx**2*yy*zz*log(yy)**3*log(-((-1 + yy)/zz)) - 
+     -      240*logmh2omu2**3*xx**4*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      120*logmh2omu2*pi**2*xx**4*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      240*logmh2omu2**3*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      120*logmh2omu2*pi**2*xx**3*yy*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      3360*xx**4*zeta3*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      3360*xx**3*yy*zeta3*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      2880*xx**3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      1440*logmh2omu2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      240*logmh2omu2**3*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      120*logmh2omu2*pi**2*xx**3*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      2880*xx**2*yy*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      240*logmh2omu2**3*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      3360*xx**3*zeta3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      3360*xx**2*yy*zeta3*zz*log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      2880*xx**2*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      1440*logmh2omu2*xx**2*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      2880*xx*yy*zz**2*log(((-1 + xx)*(-1 + zz))/(xx*zz)) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*
+     -       log(((-1 + xx)*(-1 + zz))/(xx*zz)) + 
+     -      240*logmh2omu2**3*xx**4*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**4*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*logmh2omu2*pi**2*xx**4*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**4*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*logmh2omu2**3*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      3360*xx**4*zeta3*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6720*cf*Nc*xx**4*zeta3*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      3360*xx**3*yy*zeta3*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6720*cf*Nc*xx**3*yy*zeta3*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*logmh2omu2**3*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2880*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*logmh2omu2**3*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      5760*cf*Nc*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*pi**2*xx**2*yy*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2880*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      5760*cf*Nc*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*pi**2*xx*yy**2*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx*yy**2*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      3360*xx**3*zeta3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6720*cf*Nc*xx**3*zeta3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      3360*xx**2*yy*zeta3*zz*log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      6720*cf*Nc*xx**2*yy*zeta3*zz*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2880*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      720*logmh2omu2**2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      5760*cf*Nc*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*pi**2*xx*yy*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*xx*yy*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      2880*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      1440*logmh2omu2*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      720*logmh2omu2**2*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      5760*cf*Nc*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      1440*cf*logmh2omu2**2*Nc*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      120*pi**2*yy**2*zz**2*log(((-1 + yy)*(-1 + zz))/(yy*zz)) - 
+     -      240*cf*Nc*pi**2*yy**2*zz**2*
+     -       log(((-1 + yy)*(-1 + zz))/(yy*zz)) + 
+     -      240*logmh2omu2**3*xx**4*log(zz) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**4*log(zz) - 
+     -      120*logmh2omu2*pi**2*xx**4*log(zz) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**4*log(zz) + 
+     -      240*logmh2omu2**3*xx**3*yy*log(zz) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*yy*log(zz) - 
+     -      120*logmh2omu2*pi**2*xx**3*yy*log(zz) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*yy*log(zz) + 
+     -      3360*xx**4*zeta3*log(zz) + 6720*cf*Nc*xx**4*zeta3*log(zz) + 
+     -      3360*xx**3*yy*zeta3*log(zz) + 
+     -      6720*cf*Nc*xx**3*yy*zeta3*log(zz) + 
+     -      240*logmh2omu2**3*xx**3*zz*log(zz) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**3*zz*log(zz) - 
+     -      120*logmh2omu2*pi**2*xx**3*zz*log(zz) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**3*zz*log(zz) + 
+     -      240*logmh2omu2**3*xx**2*yy*zz*log(zz) - 
+     -      5760*cf*Nc*xx**2*yy*zz*log(zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx**2*yy*zz*log(zz) + 
+     -      480*cf*logmh2omu2**3*Nc*xx**2*yy*zz*log(zz) - 
+     -      120*logmh2omu2*pi**2*xx**2*yy*zz*log(zz) - 
+     -      240*cf*logmh2omu2*Nc*pi**2*xx**2*yy*zz*log(zz) + 
+     -      3360*xx**3*zeta3*zz*log(zz) + 
+     -      6720*cf*Nc*xx**3*zeta3*zz*log(zz) + 
+     -      3360*xx**2*yy*zeta3*zz*log(zz) + 
+     -      6720*cf*Nc*xx**2*yy*zeta3*zz*log(zz) - 
+     -      5760*cf*Nc*xx*yy*zz**2*log(zz) + 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*log(zz) + 
+     -      1440*logmh2omu2*xx**4*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*logmh2omu2*xx**3*yy*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*logmh2omu2*xx**3*zz*Li2((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + xx + zz)/xx)*
+     -       log(zz) - 1440*logmh2omu2*xx**4*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 2880*cf*logmh2omu2*Nc*xx**4*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*logmh2omu2*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 1440*logmh2omu2*xx**3*zz*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 2880*cf*logmh2omu2*Nc*xx**3*zz*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 2880*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*
+     -       log(zz) - 2880*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx*yy**2*zz*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*xx*yy*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*yy**2*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      2880*cf*Nc*yy**2*zz**2*Li2((-1 + yy + zz)/yy)*log(zz) - 
+     -      1440*xx**4*Li3((-1 + xx + zz)/xx)*log(zz) - 
+     -      1440*xx**3*yy*Li3((-1 + xx + zz)/xx)*log(zz) - 
+     -      1440*xx**3*zz*Li3((-1 + xx + zz)/xx)*log(zz) - 
+     -      1440*xx**2*yy*zz*Li3((-1 + xx + zz)/xx)*log(zz) + 
+     -      1440*xx**4*Li3((-1 + yy + zz)/yy)*log(zz) + 
+     -      2880*cf*Nc*xx**4*Li3((-1 + yy + zz)/yy)*log(zz) + 
+     -      1440*xx**3*yy*Li3((-1 + yy + zz)/yy)*log(zz) + 
+     -      2880*cf*Nc*xx**3*yy*Li3((-1 + yy + zz)/yy)*log(zz) + 
+     -      1440*xx**3*zz*Li3((-1 + yy + zz)/yy)*log(zz) + 
+     -      2880*cf*Nc*xx**3*zz*Li3((-1 + yy + zz)/yy)*log(zz) + 
+     -      1440*xx**2*yy*zz*Li3((-1 + yy + zz)/yy)*log(zz) + 
+     -      2880*cf*Nc*xx**2*yy*zz*Li3((-1 + yy + zz)/yy)*log(zz) + 
+     -      720*logmh2omu2**2*xx**4*log(-((-1 + zz)/xx))*log(zz) - 
+     -      120*pi**2*xx**4*log(-((-1 + zz)/xx))*log(zz) + 
+     -      720*logmh2omu2**2*xx**3*yy*log(-((-1 + zz)/xx))*log(zz) - 
+     -      120*pi**2*xx**3*yy*log(-((-1 + zz)/xx))*log(zz) + 
+     -      1440*xx**3*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      720*logmh2omu2**2*xx**3*zz*log(-((-1 + zz)/xx))*log(zz) - 
+     -      120*pi**2*xx**3*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      1440*xx**2*yy*zz*log(-((-1 + zz)/xx))*log(zz) + 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/xx))*
+     -       log(zz) - 120*pi**2*xx**2*yy*zz*log(-((-1 + zz)/xx))*
+     -       log(zz) + 1440*xx**2*zz**2*log(-((-1 + zz)/xx))*log(zz) + 
+     -      1440*xx*yy*zz**2*log(-((-1 + zz)/xx))*log(zz) - 
+     -      720*logmh2omu2**2*xx**4*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**4*log(-((-1 + zz)/yy))*
+     -       log(zz) + 120*pi**2*xx**4*log(-((-1 + zz)/yy))*log(zz) + 
+     -      240*cf*Nc*pi**2*xx**4*log(-((-1 + zz)/yy))*log(zz) - 
+     -      720*logmh2omu2**2*xx**3*yy*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**3*yy*log(-((-1 + zz)/yy))*
+     -       log(zz) + 120*pi**2*xx**3*yy*log(-((-1 + zz)/yy))*
+     -       log(zz) + 240*cf*Nc*pi**2*xx**3*yy*log(-((-1 + zz)/yy))*
+     -       log(zz) - 720*logmh2omu2**2*xx**3*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 1440*cf*logmh2omu2**2*Nc*xx**3*zz*
+     -       log(-((-1 + zz)/yy))*log(zz) + 
+     -      120*pi**2*xx**3*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      240*cf*Nc*pi**2*xx**3*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      1440*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      720*logmh2omu2**2*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 2880*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) - 2880*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 120*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 240*cf*Nc*pi**2*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 1440*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*logmh2omu2*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) + 
+     -      2880*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*
+     -       log(zz) + 1440*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*logmh2omu2*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      2880*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      2880*cf*logmh2omu2*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) + 1440*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      1440*logmh2omu2*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) + 
+     -      2880*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz) - 
+     -      2880*cf*logmh2omu2*Nc*yy**2*zz**2*log(-((-1 + zz)/yy))*
+     -       log(zz) + 360*logmh2omu2**2*xx**4*log(zz)**2 + 
+     -      720*cf*logmh2omu2**2*Nc*xx**4*log(zz)**2 - 
+     -      60*pi**2*xx**4*log(zz)**2 - 
+     -      120*cf*Nc*pi**2*xx**4*log(zz)**2 + 
+     -      360*logmh2omu2**2*xx**3*yy*log(zz)**2 + 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*yy*log(zz)**2 - 
+     -      60*pi**2*xx**3*yy*log(zz)**2 - 
+     -      120*cf*Nc*pi**2*xx**3*yy*log(zz)**2 + 
+     -      360*logmh2omu2**2*xx**3*zz*log(zz)**2 + 
+     -      720*cf*logmh2omu2**2*Nc*xx**3*zz*log(zz)**2 - 
+     -      60*pi**2*xx**3*zz*log(zz)**2 - 
+     -      120*cf*Nc*pi**2*xx**3*zz*log(zz)**2 + 
+     -      360*logmh2omu2**2*xx**2*yy*zz*log(zz)**2 + 
+     -      1440*cf*Nc*xx**2*yy*zz*log(zz)**2 + 
+     -      720*cf*logmh2omu2**2*Nc*xx**2*yy*zz*log(zz)**2 - 
+     -      60*pi**2*xx**2*yy*zz*log(zz)**2 - 
+     -      120*cf*Nc*pi**2*xx**2*yy*zz*log(zz)**2 + 
+     -      1440*cf*Nc*xx*yy*zz**2*log(zz)**2 + 
+     -      720*xx**4*Li2((-1 + xx + zz)/xx)*log(zz)**2 + 
+     -      720*xx**3*yy*Li2((-1 + xx + zz)/xx)*log(zz)**2 + 
+     -      720*xx**3*zz*Li2((-1 + xx + zz)/xx)*log(zz)**2 + 
+     -      720*xx**2*yy*zz*Li2((-1 + xx + zz)/xx)*log(zz)**2 - 
+     -      720*xx**4*Li2((-1 + yy + zz)/yy)*log(zz)**2 - 
+     -      1440*cf*Nc*xx**4*Li2((-1 + yy + zz)/yy)*log(zz)**2 - 
+     -      720*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz)**2 - 
+     -      1440*cf*Nc*xx**3*yy*Li2((-1 + yy + zz)/yy)*log(zz)**2 - 
+     -      720*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 - 
+     -      1440*cf*Nc*xx**3*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 - 
+     -      720*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 - 
+     -      1440*cf*Nc*xx**2*yy*zz*Li2((-1 + yy + zz)/yy)*log(zz)**2 + 
+     -      720*logmh2omu2*xx**4*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      720*logmh2omu2*xx**3*yy*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      720*logmh2omu2*xx**3*zz*log(-((-1 + zz)/xx))*log(zz)**2 + 
+     -      720*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/xx))*
+     -       log(zz)**2 - 720*logmh2omu2*xx**4*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 1440*cf*logmh2omu2*Nc*xx**4*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      720*logmh2omu2*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      1440*cf*logmh2omu2*Nc*xx**3*yy*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 720*logmh2omu2*xx**3*zz*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 1440*cf*logmh2omu2*Nc*xx**3*zz*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      720*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      720*logmh2omu2*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 1440*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*
+     -       log(zz)**2 - 1440*cf*logmh2omu2*Nc*xx**2*yy*zz*
+     -       log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      720*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      1440*cf*Nc*xx*yy**2*zz*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      720*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      1440*cf*Nc*xx*yy*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      720*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 - 
+     -      1440*cf*Nc*yy**2*zz**2*log(-((-1 + zz)/yy))*log(zz)**2 + 
+     -      240*logmh2omu2*xx**4*log(zz)**3 + 
+     -      480*cf*logmh2omu2*Nc*xx**4*log(zz)**3 + 
+     -      240*logmh2omu2*xx**3*yy*log(zz)**3 + 
+     -      480*cf*logmh2omu2*Nc*xx**3*yy*log(zz)**3 + 
+     -      240*logmh2omu2*xx**3*zz*log(zz)**3 + 
+     -      480*cf*logmh2omu2*Nc*xx**3*zz*log(zz)**3 + 
+     -      240*logmh2omu2*xx**2*yy*zz*log(zz)**3 + 
+     -      480*cf*logmh2omu2*Nc*xx**2*yy*zz*log(zz)**3 + 
+     -      240*xx**4*log(-((-1 + zz)/xx))*log(zz)**3 + 
+     -      240*xx**3*yy*log(-((-1 + zz)/xx))*log(zz)**3 + 
+     -      240*xx**3*zz*log(-((-1 + zz)/xx))*log(zz)**3 + 
+     -      240*xx**2*yy*zz*log(-((-1 + zz)/xx))*log(zz)**3 - 
+     -      240*xx**4*log(-((-1 + zz)/yy))*log(zz)**3 - 
+     -      480*cf*Nc*xx**4*log(-((-1 + zz)/yy))*log(zz)**3 - 
+     -      240*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**3 - 
+     -      480*cf*Nc*xx**3*yy*log(-((-1 + zz)/yy))*log(zz)**3 - 
+     -      240*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**3 - 
+     -      480*cf*Nc*xx**3*zz*log(-((-1 + zz)/yy))*log(zz)**3 - 
+     -      240*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**3 - 
+     -      480*cf*Nc*xx**2*yy*zz*log(-((-1 + zz)/yy))*log(zz)**3 + 
+     -      60*xx**4*log(zz)**4 + 120*cf*Nc*xx**4*log(zz)**4 + 
+     -      60*xx**3*yy*log(zz)**4 + 120*cf*Nc*xx**3*yy*log(zz)**4 + 
+     -      60*xx**3*zz*log(zz)**4 + 120*cf*Nc*xx**3*zz*log(zz)**4 + 
+     -      60*xx**2*yy*zz*log(zz)**4 + 120*cf*Nc*xx**2*yy*zz*log(zz)**4
+     -      ))/(360.*Nc*rt2*xx**2*yy*(xx + yy)*(xx + zz)) 
+
+!===================================================================
+
+      return 
+      
+   99 format(a35,e15.8)
+      
+      end
+

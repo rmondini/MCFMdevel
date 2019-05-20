@@ -14,6 +14,7 @@
       include 'scet_const.f'
       real(dp)::y12,y23,y31,soft2(-1:3),preIijm(5),
      & Iijm(6),Lss,Lsd,Isum12,Isum3456
+      real(dp)::c00,c01,c02,c03,c10,c20,c30
       integer::order,j1,j2,j3,j4,j5,j6
 !      integer,parameter::i(6)=(/1,2,2,3,3,1/)
 !      integer,parameter::j(6)=(/2,1,3,2,1,3/)
@@ -76,11 +77,25 @@
      & CA*be0*Lss**2 - half*CA*zeta2*be0 - half*CF*gams1 
      & + 2._dp*CF*be0*Isum12 - CF*zeta2*be0
 
-      soft2(-1)=60.1426_dp+41.0237_dp*Lss-2.57381_dp*Lss**2
-     & -0.692668_dp*Lss**3+0.226885_dp*Lss**4
-     & +0.0209989_dp*Lss**5+0.00090579_dp*Lss**6
-     & +0.0000132008_dp*Lss**7
+c---- BLP fit 1504.02540
+!      soft2(-1)=60.1426_dp+41.0237_dp*Lss-2.57381_dp*Lss**2
+!     & -0.692668_dp*Lss**3+0.226885_dp*Lss**4
+!     & +0.0209989_dp*Lss**5+0.00090579_dp*Lss**6
+!     & +0.0000132008_dp*Lss**7
      
+c---- CEMW fit 1711.09984
+      c00=42.357_dp
+      c10=25.158_dp
+      c20=-9.100_dp
+      c30=-2.158_dp
+      c01=25.158_dp
+      c02=-9.100_dp
+      c03=-2.158_dp
+
+      soft2(-1)=c00
+     & +c10*log(y31)+c20*log(y31)**2+c30*log(y31)**3
+     & +c01*log(one-y31)+c02*log(one-y31)**2+c03*log(one-y31)**3
+
 !      soft2(-1)=soft2(-1)/four ! DEBUG
 
       return

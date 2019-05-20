@@ -92,7 +92,7 @@ FFLAGS 	= -Wall -Wunused-variable -fno-f2c -ffixed-line-length-none $(OMPFLAG) -
 F90FLAGS = -fno-f2c $(OMPFLAG) -I$(INCPATH) -I$(OBJNAME) -J$(OBJNAME)
 
 # If using FROOT package for ROOT ntuples, first specify C++ compiler:
-CXXFLAGS=$(CXXFLAGS0) -Wall $(DROOT) 
+CXXFLAGS=$(CXXFLAGS0) -std=c++11 -Wall $(DROOT) 
 # ROOTLIBS and ROOTINCLUDE are locations of ROOT libraries and header files.
 # Find the ROOT libraries and include directory automatically by running root-config 
 # or specify them manually by providing values for ROOTLIBS and ROOTINCLUDE below
@@ -152,10 +152,9 @@ DIRS	=	$(MCFMHOME):\
 		$(SOURCEDIR)/UTools:$(SOURCEDIR)/WBFZZ\
                 $(SOURCEDIR)/WBFWW:$(SOURCEDIR)/WBFWpWp:$(SOURCEDIR)/WBFWZ\
                 $(SOURCEDIR)/WH1jet:$(SOURCEDIR)/ZH1jet:$(SOURCEDIR)/QT:$(SOURCEDIR)/Mad\
-                $(SOURCEDIR)/Gam2j:$(SOURCEDIR)/Wgajet:$(SOURCEDIR)/SCEThaddec\
+                $(SOURCEDIR)/Gam2j:$(SOURCEDIR)/Wgajet:$(SOURCEDIR)/SCEThaddec:$(SOURCEDIR)/SCEThaddec_3j:$(SOURCEDIR)/SCETHbbgcrossed\
 		$(SOURCEDIR)/ZHbbg:$(SOURCEDIR)/ZHbbdk:$(SOURCEDIR)/Hbbg\
                 $(SOURCEDIR)/QLFF
-
 
 # -----------------------------------------------------------------------------
 # Specify the object files. 
@@ -203,6 +202,41 @@ lumxmsq_zh_hbb.o\
 assemble_dec.o\
 soft_qqdec.o\
 hard_hbb.o\
+
+SCETHBBGCROSSED=\
+hard_hbbg_crossed.o\
+lumxmsq_hb.o\
+nloevalfinite_proc1.o\
+nloevalfinite_proc2.o\
+nloxnloevalfinite_proc1.o\
+nloxnloevalfinite_proc2.o\
+nnloevalfinite_proc1.o\
+nnloevalfinite_proc2.o\
+nnloevalfinitetdhpla1_proc1.o\
+nnloevalfinitetdhpla1_proc2.o\
+nnloevalfinitetdhpla2_proc1.o\
+nnloevalfinitetdhpla2_proc2.o\
+soft_qgq.o\
+
+SCETHADDECTJFILES=\
+assemble_dec_3j.o\
+hard_hbbg.o\
+soft_dec_3j.o\
+lumxmsq_h_bbg.o\
+computeIijmnobug.o\
+nloheval.o\
+nnloevalfinite.o\
+nnloevalfinitetdhpl.o\
+nnloevalfinitetdhpla1a2.o\
+nnloevalfinitetdhpla1.o\
+nnloevalfinitetdhpla2.o\
+ccodefinite.o\
+cppcodefinite.o\
+nloxnlofeval.o\
+acoeffnloinfraredeval.o\
+acoeffnlomiparteval.o\
+acoeffnlorenormeval.o\
+applyRe.o\
 
 WGAMJFILES=\
 qqb_wgamj_v.o\
@@ -2466,7 +2500,7 @@ OURCODE = $(LIBFILES) $(NEEDFILES)  $(PROCDEPFILES) $(SPINORFILES) \
 	  $(PWGPLOTSFILES) \
 	  $(CHECKINGFILES) $(UTOOLSFILES) $(WBFFILES) \
           $(SCETFILES) $(SCET0jFILES) $(SCET1jFILES) $(TDHPLFILES) $(WH1JETFILES) $(QTFILES) \
-          $(GAM2JFILES) $(WGAMJFILES) $(SCETHADDECFILES) $(ZHBBGFILES) $(ZHBBDKFILES) $(HBBGFILES)
+          $(GAM2JFILES) $(WGAMJFILES) $(SCETHADDECFILES) $(SCETHADDECTJFILES) $(SCETHBBGCROSSED) $(ZHBBGFILES) $(ZHBBDKFILES) $(HBBGFILES)
           
 OTHER = $(INTEGRATEFILES) $(PARTONFILES) $(WPWP2JFILES) $(F90FILES) 
 
@@ -2484,7 +2518,7 @@ endif
 
 mcfm$(LIBEXT): $(ALLMCFM)
 	$(FC) $(FFLAGS) -L$(LIBDIR) -L$(QLDIR) -L$(FFDIR) -L$(PVDIR) -L$(RECURDIR) -L$(OVDIR) -o $@ \
-	$(patsubst %,$(OBJNAME)/%,$(ALLMCFM)) $(LIBFLAGS) 
+	$(patsubst %,$(OBJNAME)/%,$(ALLMCFM)) $(LIBFLAGS) -lginac -lcln -lstdc++
 	mv mcfm$(LIBEXT) Bin/mcfm$(LIBEXT)$(PDFEXT)
 	@echo $(PDFMSG)
 	@echo $(NTUPMSG)
@@ -2515,6 +2549,13 @@ mcfmcc: mcfmlib $(MAIN) cxxusercode.o
 mcfmlib: $(MCFMLIB)
 	ar -r libmcfm.a $(patsubst %,$(OBJNAME)/%,$(MCFMLIB))
 	ranlib libmcfm.a
+
+############################################################
+
+obj/cppcodefinite.o: cppcodefinite.cpp wrpfinite.h 
+	$(CXX) -c -std=c++11 ./src/SCEThaddec_3j/cppcodefinite.cpp
+
+############################################################
 
 # for FROOT package
 %.co: %.c

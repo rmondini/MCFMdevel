@@ -74,7 +74,6 @@
      & +half*zeta2+half*log(y12)**2)
      & +CF*(-two*Isum12+zeta2-log(y12)**2)
 
-
       if (order < 2) return
 
       soft2(3)=8._dp*(CA+2*CF)**2
