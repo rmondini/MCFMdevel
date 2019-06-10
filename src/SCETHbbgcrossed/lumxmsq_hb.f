@@ -44,6 +44,7 @@ c---- RM, May 2019
      & bitqa,lobitqa,assemblejet
       logical inclqa
       common/density/ih1,ih2
+      integer, parameter:: ibottom=5
 
 !---------------------
 !==== whether to include bb~->Hg and b~b->Hg
@@ -58,9 +59,10 @@ C~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 c---- debug
 !      write(*,*) '~~~the beginning~~~'
 !      order=2
+!      write(*,*) 'ibottom=',ibottom
 c---- debug
 
-      call dotem(5,p,s)
+      call dotem(ibottom,p,s)
 
       s34=(p(3,4)+p(4,4))**2
      &   -(p(3,1)+p(4,1))**2-(p(3,2)+p(4,2))**2-(p(3,3)+p(4,3))**2
@@ -107,8 +109,8 @@ c---- debug
 c---- debug
 
 c---- jet functions
-      call jetq(order,two*p(5,4),jet1q,jet2q)
-      call jetg(order,two*p(5,4),jet1g,jet2g)
+      call jetq(order,two*p(ibottom,4),jet1q,jet2q)
+      call jetg(order,two*p(ibottom,4),jet1g,jet2g)
 
 c---- debug
 !      write(*,*) 'jet1q=',jet1q
@@ -119,8 +121,8 @@ c---- debug
 
 c---- soft functions
       y12=s(1,2)/p(1,4)/p(2,4)/four
-      y15=s(1,5)/p(1,4)/p(5,4)/four
-      y25=s(2,5)/p(2,4)/p(5,4)/four
+      y15=s(1,ibottom)/p(1,4)/p(ibottom,4)/four
+      y25=s(2,ibottom)/p(2,4)/p(ibottom,4)/four
 
 c---- debug
 !      write(*,*) 'y12=',y12
@@ -158,21 +160,21 @@ c---- debug
 c---- debug
 
 c---- hard function
-      xvarqg=s(1,5)/s34
-      yvarqg=s(2,5)/s34
+      xvarqg=s(1,ibottom)/s34
+      yvarqg=s(2,ibottom)/s34
       zvarqg=s(1,2)/s34
       uvarqg=-yvarqg/zvarqg
       vvarqg=one/zvarqg
 
-      xvargq=s(2,5)/s34
-      yvargq=s(1,5)/s34
+      xvargq=s(2,ibottom)/s34
+      yvargq=s(1,ibottom)/s34
       zvargq=s(1,2)/s34
       uvargq=-yvargq/zvargq
       vvargq=one/zvargq
 
       xvarqa=s(1,2)/s34
-      yvarqa=s(1,5)/s34
-      zvarqa=s(2,5)/s34
+      yvarqa=s(1,ibottom)/s34
+      zvarqa=s(2,ibottom)/s34
       uvarqa=-yvarqa/xvarqa
       vvarqa=one/xvarqa
 
